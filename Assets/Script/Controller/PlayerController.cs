@@ -5,6 +5,14 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Hand Image")]
+    [SerializeField]
+    Sprite spriteHold;
+    [SerializeField]
+    Sprite spriteNormal;
+
+    SpriteRenderer spriteRenderer;
+
     [Header("This Is Keyboard")]
     [SerializeField]
     bool isKeyboard;
@@ -29,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float vertical;
     [SerializeField] float horizontal;
 
-    float stamina = 100;
+    public float stamina = 100;
     float staminaMax = 100;
     float speedDown = 1;
     float speedUp = 1;
@@ -37,6 +45,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rg = GetComponent<Rigidbody>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void JoystickController()
@@ -153,6 +162,8 @@ public class PlayerController : MonoBehaviour
 
     void Hold(Transform current)
     {
+        ChangeHandSprite(spriteHold);
+        
         //Kenime bir joint componenti ekle.
         CharacterJoint joint = gameObject.AddComponent<CharacterJoint>();
 
@@ -163,11 +174,15 @@ public class PlayerController : MonoBehaviour
         joint.connectedBody = current.GetComponent<Rigidbody>();
 
         isHold = true;
-        Up();
+
+
+        Down();
     }
 
     void Break(Transform currentStuff)
     {
+        ChangeHandSprite(spriteNormal);
+
         if (currentStuff != null)
         {
             currentStuff.GetComponent<StuffController>().Break();
@@ -178,7 +193,9 @@ public class PlayerController : MonoBehaviour
         rg.angularVelocity = Vector3.zero;
 
         isHold = false;
-        Down();
+
+
+        Up();
     }
     
     Coroutine current;
@@ -241,5 +258,10 @@ public class PlayerController : MonoBehaviour
             isEnter = false;
             print("isEnter : False");
         }
+    }
+
+    void ChangeHandSprite(Sprite sprite)
+    {
+        spriteRenderer.sprite = sprite;
     }
 }
