@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
     bool allowHold;
     bool isHold;
-    bool isEnter;
+    public bool isEnter;
     [SerializeField] float vertical;
     [SerializeField] float horizontal;
 
@@ -184,7 +184,7 @@ public class PlayerController : MonoBehaviour
         CharacterJoint joint = gameObject.AddComponent<CharacterJoint>();
 
         //Objenin Tutulma fonksiyonu cagırılıyor.
-        currentStuff.GetComponent<StuffController>().Hold();
+        currentStuff.GetComponent<StuffController>().Hold(this);
 
         //Connected body'sine current objeyi ver.
         joint.connectedBody = current.GetComponent<Rigidbody>();
@@ -201,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
         if (currentStuff != null)
         {
-            currentStuff.GetComponent<StuffController>().Break();
+            currentStuff.GetComponent<StuffController>().Break(this);
         }
 
         Destroy(gameObject.GetComponent<CharacterJoint>());
