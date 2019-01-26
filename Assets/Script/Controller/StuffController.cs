@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class StuffController : MonoBehaviour
 {
-	Rigidbody             rg;
-	public AreaController activeAreaSide = null;
+    Rigidbody rg;
+    public AreaController activeAreaSide = null;
 
-<<<<<<< HEAD
+
     public int mass;
     public int countHold;
 
@@ -28,13 +28,6 @@ public class StuffController : MonoBehaviour
         SettingMass(countHold);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Stuff")
-        {
-            print("Enter");
-        }
-    }
 
     public void Hold()
     {
@@ -49,48 +42,32 @@ public class StuffController : MonoBehaviour
 
         rg.mass = mass - factor;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Stuff"))
+        {
+            print("Enter");
+        }
+        else if (other.name == "LeftSide" || other.name == "RightSide")
+        {
+            activeAreaSide = other.GetComponent<AreaController>();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        switch (other.name)
+        {
+            case "Neutral":
+                activeAreaSide.Add(this);
+                break;
+            case "LeftSide":
+            case "RightSide":
+                activeAreaSide = null;
+                break;
+        }
+    }
+
+
 }
-=======
-	void Start()
-	{
-		rg = GetComponent<Rigidbody>();
-	}
-
-	public void Break()
-	{
-		rg.velocity        = Vector3.zero;
-		rg.angularVelocity = Vector3.zero;
-	}
-
-	private void OnTriggerEnter(Collider other)
-	{
-		if(other.CompareTag("Stuff"))
-		{
-			print("Enter");
-		}
-		else if(other.name == "LeftSide" || other.name == "RightSide")
-		{
-			activeAreaSide = other.GetComponent<AreaController>();
-		}
-	}
-
-	private void OnTriggerExit(Collider other)
-	{
-		switch(other.name)
-		{
-			case "Neutral":
-				activeAreaSide.Add(this);
-				break;
-			case "LeftSide":
-			case "RightSide":
-				activeAreaSide = null;
-				break;
-		}
-	}
-
-	void Hit()
-	{
-		print("Hit");
-	}
-}
->>>>>>> 0e26d39696fbc131dc1424beacd38c88e623f968
