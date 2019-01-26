@@ -12,6 +12,9 @@ public class StuffController : MonoBehaviour
     public int countHold;
 
     public int rate;
+    
+    [Range(1,100)]
+    public int stuffValue = 1;
 
     void Start()
     {
