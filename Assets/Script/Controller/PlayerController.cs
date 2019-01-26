@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Sprite spriteNormal;
 
+    [SerializeField]
+    float speedColorAlpha;
+
     SpriteRenderer spriteRenderer;
 
     [Header("This Is Keyboard")]
@@ -42,8 +45,11 @@ public class PlayerController : MonoBehaviour
     float speedDown = 1;
     float speedUp = 1;
 
+    ColorFunctions cf;
+
     void Start()
     {
+        cf = FindObjectOfType<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -158,12 +164,22 @@ public class PlayerController : MonoBehaviour
             JoystickController();
         }
 
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            allowTiredWork = true;
+            StartCoroutine(ChangeColor(transform, speedColorAlpha, 0.2f));
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            allowTiredWork = false;
+        }
+
     }
 
-    void Hold(Transform current)
+    public void Hold(Transform current)
     {
         ChangeHandSprite(spriteHold);
-        
+
         //Kenime bir joint componenti ekle.
         CharacterJoint joint = gameObject.AddComponent<CharacterJoint>();
 
@@ -179,7 +195,7 @@ public class PlayerController : MonoBehaviour
         Down();
     }
 
-    void Break(Transform currentStuff)
+    public void Break(Transform currentStuff)
     {
         ChangeHandSprite(spriteNormal);
 
@@ -197,7 +213,7 @@ public class PlayerController : MonoBehaviour
 
         Up();
     }
-    
+
     Coroutine current;
 
     public void Up()
@@ -236,6 +252,7 @@ public class PlayerController : MonoBehaviour
             stamina -= Time.deltaTime * speedDown;
             yield return null;
         }
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -264,4 +281,36 @@ public class PlayerController : MonoBehaviour
     {
         spriteRenderer.sprite = sprite;
     }
+
+    bool allowTiredWork;
+    IEnumerator ChangeColor(Transform current, float speed, float minAlpha)
+    {
+        float passed = 0;
+        SpriteRenderer spriteRenderer = current.GetComponent<SpriteRenderer>();
+
+        Color color1 = spriteRenderer.color;
+        Color color2 = new Color(1, 1, 1, minAlpha);
+        while (allowTiredWork)
+        {
+            passed += Time.deltaTime;
+            float opacity = Mathf.Sin(passed * speed) * 0.5f + 0.5f;
+
+            spriteRenderer.color = Color.Lerp(color1, color2, opacity);
+            yield return null;
+        }
+
+        //Burada da son birkez renk artırılır belki
+    }
+
+    void HandTiredStart()
+    {
+        allowTiredWork = true;
+        StartCoroutine(ChangeColor(transform, speedColorAlpha, 0.2f));
+    }
+
+    void StopHandTired()
+    {
+        allowTiredWork = false;
+    }
+
 }
