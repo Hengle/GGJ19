@@ -5,166 +5,241 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-	[Header("This Is Keyboard")] [SerializeField]
-	bool isKeyboard;
+    [Header("This Is Keyboard")]
+    [SerializeField]
+    bool isKeyboard;
 
+    [Header("Buttons String")]
+    [SerializeField]
+    string keyPlayer = "joystick 1 ";
 
-	[Header("Buttons String")] [SerializeField]
-	string keyPlayer = "joystick 1 ";
+    [SerializeField]
+    string keyButton = "button 4";
 
-	[SerializeField] string keyButton = "button 4";
+    Rigidbody rg;
 
+    [SerializeField]
+    float speedMove;
 
-	Rigidbody rg;
+    Transform currentStuff = null;
 
-	[SerializeField] float speed;
+    bool allowHold;
+    bool isHold;
+    bool isEnter;
+    [SerializeField] float vertical;
+    [SerializeField] float horizontal;
 
-	Transform currentStuff = null;
+    float stamina = 100;
+    float staminaMax = 100;
+    float speedDown = 1;
+    float speedUp = 1;
 
-	bool                   allowHold;
-	bool                   isHold;
-	bool                   isEnter;
-	[SerializeField] float vertical;
-	[SerializeField] float horizontal;
+    void Start()
+    {
+        rg = GetComponent<Rigidbody>();
+    }
 
-	private void Awake()
-	{
-		if(isKeyboard)
-		{
-			keyPlayer = "";
-		}
-	}
+    void JoystickController()
+    {
+        vertical = Input.GetAxis(keyPlayer + " Vertical");
+        horizontal = Input.GetAxis(keyPlayer + " Horizontal");
 
-	// Start is called before the first frame update
-	void Start()
-	{
-		rg = GetComponent<Rigidbody>();
-	}
+        Vector3 velocity = Vector3.zero;
+        Vector3 dir = Vector3.zero;
 
-	void FixedUpdate()
-	{
-		if(isKeyboard)
-		{
-			vertical   = Input.GetAxis("Vertical");
-			horizontal = Input.GetAxis("Horizontal");
-		}
-		else
-		{
-			vertical   = Input.GetAxis(keyPlayer + " Vertical");
-			horizontal = Input.GetAxis(keyPlayer + " Horizontal");
-		}
+        if (vertical != 0 || horizontal != 0)
+        {
+            dir = (Vector3.forward * vertical) + (Vector3.right * horizontal);
+        }
 
-		Vector3 velocity = Vector2.zero;
-		Vector3 dir      = Vector2.zero;
+        velocity = dir * speedMove;
+        rg.velocity = velocity;
 
-		if(vertical != 0 || horizontal != 0)
-		{
-			dir = (Vector3.forward * vertical) + (Vector3.right * horizontal);
-		}
+        /* HOLD */
 
-		velocity = dir * speed;
+        if (isEnter)
+        {
+            if (!isKeyboard && Input.GetKey(keyPlayer + " " + keyButton))
+            {
+                if (!isHold)
+                {
+                    Hold(currentStuff);
+                }
+            }
+            else if (isHold)
+            {
+                Break(currentStuff);
+            }
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+        }
+        else
+        {
+            if (isHold)
+            {
+                Break(currentStuff);
+            }
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+        }
+    }
 
+    void KeyboardController()
+    {
+        vertical = Input.GetAxis("Vertical");
+        horizontal = Input.GetAxis("Horizontal");
 
-		rg.velocity = velocity;
+        Vector3 velocity = Vector3.zero;
+        Vector3 dir = Vector3.zero;
 
-		/* HOLD */
+        if (vertical != 0 || horizontal != 0)
+        {
+            dir = (Vector3.forward * vertical) + (Vector3.right * horizontal);
+        }
 
-		if(isEnter)
-		{
-			if(
-				(isKeyboard && Input.GetKey(KeyCode.Space)) ||
-				(!isKeyboard && Input.GetKey(keyPlayer + " " + keyButton))
-			)
-			{
-				if(!isHold)
-				{
-					Hold(currentStuff);
-				}
-			}
-			else if(isHold)
-			{
-				Break(currentStuff);
-			}
-			else if(gameObject.GetComponent<CharacterJoint>() != null)
-			{
-				Break(currentStuff);
-			}
-		}
-		else
-		{
-			if(isHold)
-			{
-				Break(currentStuff);
-			}
-			else if(gameObject.GetComponent<CharacterJoint>() != null)
-			{
-				Break(currentStuff);
-			}
-		}
+        velocity = dir * speedMove;
 
+        rg.velocity = velocity;
 
-		///* TEST */
+        /* HOLD */
 
-		//if (Input.GetKeyDown(KeyCode.Y))
-		//{
-		//    print("Test Work : Press Y");
-		//    print("Name current : " + currentStuff.name);
-		//    Hold(currentStuff);
-		//}
+        if (isEnter)
+        {
+            if (isKeyboard && Input.GetKey(KeyCode.Space))
+            {
+                if (!isHold)
+                {
+                    Hold(currentStuff);
+                }
+            }
+            else if (isHold)
+            {
+                Break(currentStuff);
+            }
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+        }
+        else
+        {
+            if (isHold)
+            {
+                Break(currentStuff);
+            }
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+        }
+    }
 
-		//if (Input.GetKeyDown(KeyCode.K))
-		//{
-		//    print("Test Work : Press Y");
-		//    Break(currentStuff);
-		//}
-	}
+    void FixedUpdate()
+    {
+        if (isKeyboard)
+        {
+            KeyboardController();
+        }
+        else
+        {
+            JoystickController();
+        }
 
-	void Hold(Transform current)
-	{
-		//Kenime bir joint componenti ekle.
-		CharacterJoint joint = gameObject.AddComponent<CharacterJoint>();
+    }
 
-		//connected body'sine current objeyi ver.
-		joint.connectedBody = current.GetComponent<Rigidbody>();
+    void Hold(Transform current)
+    {
+        //Kenime bir joint componenti ekle.
+        CharacterJoint joint = gameObject.AddComponent<CharacterJoint>();
 
-		isHold = true;
-	}
+        //Objenin Tutulma fonksiyonu cagırılıyor.
+        currentStuff.GetComponent<StuffController>().Hold();
 
-	void Break(Transform currentStuff)
-	{
-		if(currentStuff != null)
-		{
-			//Connected destroy
-			currentStuff.GetComponent<StuffController>().Break();
+        //Connected body'sine current objeyi ver.
+        joint.connectedBody = current.GetComponent<Rigidbody>();
 
-			Destroy(gameObject.GetComponent<CharacterJoint>());
-		}
+        isHold = true;
+        Up();
+    }
 
-		rg.angularVelocity = Vector3.zero;
+    void Break(Transform currentStuff)
+    {
+        if (currentStuff != null)
+        {
+            currentStuff.GetComponent<StuffController>().Break();
+        }
 
-		isHold = false;
-	}
+        Destroy(gameObject.GetComponent<CharacterJoint>());
 
+        rg.angularVelocity = Vector3.zero;
 
-	private void OnTriggerEnter(Collider other)
-	{
-		print("Enter");
-		if(other.tag == "Stuff" && isEnter == false)
-		{
-			print("is Enter t");
-			isEnter      = true;
-			currentStuff = other.transform;
-		}
-	}
+        isHold = false;
+        Down();
+    }
+    
+    Coroutine current;
 
-	private void OnTriggerExit(Collider other)
-	{
-		print("Exit");
-		if(other.tag == "Stuff" && other.transform == currentStuff)
-		{
-			currentStuff = null;
-			isEnter      = false;
-			print("isEnter : False");
-		}
-	}
+    public void Up()
+    {
+        if (current != null)
+        {
+            StopCoroutine(current);
+        }
+
+        current = StartCoroutine(_Up());
+    }
+
+    IEnumerator _Up()
+    {
+        while (stamina < staminaMax)
+        {
+            stamina += Time.deltaTime * speedUp;
+            yield return null;
+        }
+    }
+
+    public void Down()
+    {
+        if (current != null)
+        {
+            StopCoroutine(current);
+        }
+
+        current = StartCoroutine(_Down());
+    }
+
+    IEnumerator _Down()
+    {
+        while (stamina > 0)
+        {
+            stamina -= Time.deltaTime * speedDown;
+            yield return null;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        print("OnTrigger Enter");
+        if (other.tag == "Stuff" && isEnter == false)
+        {
+            print("isEnter : True");
+            isEnter = true;
+            currentStuff = other.transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        print("OnTrigger Exit");
+        if (other.tag == "Stuff" && other.transform == currentStuff)
+        {
+            currentStuff = null;
+            isEnter = false;
+            print("isEnter : False");
+        }
+    }
 }

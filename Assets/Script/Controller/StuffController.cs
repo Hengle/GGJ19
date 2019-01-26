@@ -6,28 +6,45 @@ public class StuffController : MonoBehaviour
 {
     Rigidbody rg;
 
+    public int mass;
+    public int countHold;
+
+    public int rate;
+
     void Start()
     {
         rg = GetComponent<Rigidbody>();
+        rg.mass = mass;
     }
-    
+
     public void Break()
     {
         rg.velocity = Vector3.zero;
         rg.angularVelocity = Vector3.zero;
-        
+
+        countHold--;
+        SettingMass(countHold);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Stuff" )
+        if (other.tag == "Stuff")
         {
             print("Enter");
         }
     }
 
-    void Hit()
+    public void Hold()
     {
-        print("Hit");
+        countHold++;
+        SettingMass(countHold);
+    }
+
+    void SettingMass(int count)
+    {
+        int value = mass;
+        int factor = count * rate;
+
+        rg.mass = mass - factor;
     }
 }
