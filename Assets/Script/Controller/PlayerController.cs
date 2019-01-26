@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour
     bool allowHold;
     bool isHold;
     bool isEnter;
+    [SerializeField]
+    float vertical;
+    [SerializeField]
+    float horizontal;
 
     private void Awake()
     {
@@ -44,8 +48,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        float vertical;
-        float horizontal;
 
         if (isKeyboard)
         {
@@ -98,21 +100,28 @@ public class PlayerController : MonoBehaviour
         {
             if (isEnter)
             {
-                if (Input.GetButtonDown(keyPlayer + " " + keyButton))
+                if (Input.GetKey(keyPlayer + " " + keyButton))
                 {
-                    print("hold");
-                    Hold(currentStuff);
+                    if(!isHold)
+                    {
+                        print("hold");
+                        Hold(currentStuff);
+                    }
+                } else if(isHold)
+                {
+                    print("break");
+                    Break(currentStuff);
                 }
             }
 
-            if (isHold)
+            /*if (isHold)
             {
                 if (Input.GetButtonUp(keyPlayer + " " + keyButton))
                 {
                     print("break");
                     Break(currentStuff);
                 }
-            }
+            }*/
         }
 
 

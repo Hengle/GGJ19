@@ -268,6 +268,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: keyPlayer
+      value: joystick 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: keyButton
+      value: button 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_Color.r
@@ -282,16 +292,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
-        type: 3}
-      propertyPath: keyPlayer
-      value: joystick 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
-        type: 3}
-      propertyPath: keyButton
-      value: button 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6d8b53865b515e47b55dc13a6b88de1, type: 3}
@@ -832,6 +832,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: keyPlayer
+      value: joystick 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: keyButton
+      value: button 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_Color.b
@@ -846,16 +856,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.g
       value: 0.61306334
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
-        type: 3}
-      propertyPath: keyPlayer
-      value: joystick 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
-        type: 3}
-      propertyPath: keyButton
-      value: button 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6d8b53865b515e47b55dc13a6b88de1, type: 3}
@@ -1111,6 +1111,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: keyPlayer
+      value: joystick 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: keyButton
+      value: button 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_Color.r
@@ -1125,16 +1135,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
-        type: 3}
-      propertyPath: keyPlayer
-      value: joystick 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
-        type: 3}
-      propertyPath: keyButton
-      value: button 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6d8b53865b515e47b55dc13a6b88de1, type: 3}
