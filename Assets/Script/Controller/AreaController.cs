@@ -5,19 +5,46 @@ using UnityEngine;
 public class AreaController : MonoBehaviour
 {
 	public Area                  area;
-	public List<StuffController> stuffs;
+	public List<StuffController> stuffs = new List<StuffController>();
 	public ScoreController       SC;
+
+	[SerializeField] private Transform      moveToHere;
+	[SerializeField] private AnimationCurve moveCurve;
+	[Range(0, 5)]    public  float          moveDelay = 0.33f;
+	[Range(0, 5)]    public  float          moveTime  = 1f;
+
+	private TransformFunctions TF;
+
+	void Awake()
+	{
+		TF = FindObjectOfType<TransformFunctions>();
+	}
 
 	public void Add(StuffController newSC)
 	{
 		if(area == Area.Neutral) return;
 
 		if(!stuffs.Contains(newSC))
+		{
 			stuffs.Add(newSC);
 
-		SC.UpdateScore(area, CountStuffs());
+			newSC.BreakAllPlayers();
 
-//		throw new NotImplementedException();
+			Collider[] cols = newSC.GetComponents<Collider>();
+
+			foreach(Collider col in cols)
+			{
+				Destroy(col);
+			}
+
+			Destroy(newSC.GetComponent<Rigidbody>());
+
+			TF.Move(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+			TF.Scale(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+			TF.Rotate(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+		}
+
+		SC.UpdateScore(area, CountStuffs());
 	}
 
 	public void Remove(StuffController newSC)
