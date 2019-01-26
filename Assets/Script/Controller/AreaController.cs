@@ -27,9 +27,16 @@ public class AreaController : MonoBehaviour
 		throw new NotImplementedException();
 	}
 
-	public int CountStuffs()
+	private int CountStuffs()
 	{
-		return area == Area.Neutral ? 0 : stuffs.Count;
+		if(area == Area.Neutral) return 0;
+
+		int total = 0;
+
+		for(int i = 0; i < stuffs.Count; i++)
+			total += stuffs[i].stuffValue;
+
+		return total;
 	}
 }
 
