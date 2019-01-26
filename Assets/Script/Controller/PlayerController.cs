@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,8 +10,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float speed;
 
-    [SerializeField]
-    Transform currentStuff;
+    Transform currentStuff = null;
+
+    bool allowHold;
+    bool isHold;
+    bool isEnter;
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,27 +42,27 @@ public class PlayerController : MonoBehaviour
 
         rg.velocity = velocity;
 
-
         /* HOLD */
 
-        //if (allowHold)
-        //{
-        //    if (Input.GetKey(KeyCode.Space))
-        //    {
-        //        //Objeyi tut.
-        //        Hold(currentStuff);
-        //    }
-        //}
+        if (isEnter)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                print("hold");
+                Hold(currentStuff);
+            }
+        }
 
-        //if (Input.GetKeyUp(KeyCode.Space))
-        //{
-        //    if (hold)
-        //    {
-        //        print("Break");
-        //        Break();
-        //    }
+        if (isHold)
+        {
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                print("break");
+                Break(currentStuff);
+            }
+        }
 
-        //}
+
 
         /* TEST */
 
@@ -71,7 +76,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             print("Test Work : Press Y");
-            Break();
+            Break(currentStuff);
         }
 
     }
@@ -84,56 +89,40 @@ public class PlayerController : MonoBehaviour
         //connected body'sine current objeyi ver.
         joint.connectedBody = current.GetComponent<Rigidbody>();
 
-        hold = true;
+        isHold = true;
     }
 
-    void Break()
+    void Break(Transform currentStuff)
     {
         //Connected destroy
-        Destroy(gameObject.GetComponent<CharacterJoint>());
-
         currentStuff.GetComponent<StuffController>().Break();
 
-        hold = false;
+        Destroy(gameObject.GetComponent<CharacterJoint>());
+
+        isHold = false;
     }
 
-    bool allowHold;
-
-
-    bool hold;
 
     private void OnTriggerEnter(Collider other)
     {
-        print("Hit Somethign");
-        if (other.tag == "Stuff")
+        print("Enter");
+        if (other.tag == "Stuff" && currentStuff == null)
         {
-            allowHold = true;
+            print("is Enter t");
+            isEnter = true;
             currentStuff = other.transform;
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == "Stuff")
-        {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                print("Tutuyorum");
-            }
-            else if (Input.GetKeyUp(KeyCode.Space))
-            {
-                print("Bıraktım");
-            }
-        }
-
-    }
-
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Stuff"))
+        print("Exit");
+        if (other.tag == "Stuff" && other.transform != currentStuff)
         {
-            allowHold = false;
             currentStuff = null;
+            isEnter = false;
+            print("İs Entet Flase");
         }
     }
+    
 }
