@@ -99,6 +99,8 @@ public class PlayerController : MonoBehaviour
 
         Destroy(gameObject.GetComponent<CharacterJoint>());
 
+        rg.angularVelocity = Vector3.zero;
+
         isHold = false;
     }
 
@@ -106,7 +108,7 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         print("Enter");
-        if (other.tag == "Stuff" && currentStuff == null)
+        if (other.tag == "Stuff" && isEnter == false)
         {
             print("is Enter t");
             isEnter = true;
@@ -117,11 +119,11 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         print("Exit");
-        if (other.tag == "Stuff" && other.transform != currentStuff)
+        if (other.tag == "Stuff" && other.transform == currentStuff)
         {
             currentStuff = null;
             isEnter = false;
-            print("İs Entet Flase");
+            print("isEnter : False");
         }
     }
     

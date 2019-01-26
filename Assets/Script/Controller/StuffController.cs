@@ -20,5 +20,7 @@ public class StuffController : MonoBehaviour
     public void Break()
     {
         rg.velocity = Vector3.zero;
+        rg.angularVelocity = Vector3.zero;
+        
     }
 }
