@@ -4,6 +4,7 @@
 *.sln
 *.userprefs
 /.consulo
+/.idea
 /.vs
 /Library
 /Temp
