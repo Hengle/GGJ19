@@ -10,17 +10,24 @@ public class StuffController : MonoBehaviour
     {
         rg = GetComponent<Rigidbody>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    
     public void Break()
     {
         rg.velocity = Vector3.zero;
         rg.angularVelocity = Vector3.zero;
         
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Stuff" )
+        {
+            print("Enter");
+        }
+    }
+
+    void Hit()
+    {
+        print("Hit");
     }
 }

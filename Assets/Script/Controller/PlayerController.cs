@@ -5,6 +5,18 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("This Is Keyboard")]
+    [SerializeField]
+    bool isKeyboard;
+
+
+    [Header("Buttons String")]
+    [SerializeField]
+    string keyPlayer = "joystick 1 ";
+    [SerializeField]
+    string keyButton = "button 4";
+
+
     Rigidbody rg;
 
     [SerializeField]
@@ -16,6 +28,13 @@ public class PlayerController : MonoBehaviour
     bool isHold;
     bool isEnter;
 
+    private void Awake()
+    {
+        if (isKeyboard)
+        {
+            keyPlayer = "";
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -23,11 +42,21 @@ public class PlayerController : MonoBehaviour
         rg = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float vertical = Input.GetAxis("Vertical");
-        float horizontal = Input.GetAxis("Horizontal");
+        float vertical;
+        float horizontal;
+
+        if (isKeyboard)
+        {
+            vertical = Input.GetAxis("Vertical");
+            horizontal = Input.GetAxis("Horizontal");
+        }
+        else
+        {
+            vertical = Input.GetAxis(keyPlayer + " Vertical");
+            horizontal = Input.GetAxis(keyPlayer + " Horizontal");
+        }
 
         Vector3 velocity = Vector2.zero;
         Vector3 dir = Vector2.zero;
@@ -44,40 +73,65 @@ public class PlayerController : MonoBehaviour
 
         /* HOLD */
 
-        if (isEnter)
+        if (isKeyboard)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (isEnter)
             {
-                print("hold");
-                Hold(currentStuff);
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    print("hold");
+                    Hold(currentStuff);
+                }
+            }
+
+            if (isHold)
+            {
+                if (Input.GetKeyUp(KeyCode.Space))
+                {
+                    print("break");
+                    Break(currentStuff);
+                }
+            }
+
+        }
+        else
+        {
+            if (isEnter)
+            {
+                if (Input.GetButtonDown(keyPlayer + " " + keyButton))
+                {
+                    print("hold");
+                    Hold(currentStuff);
+                }
+            }
+
+            if (isHold)
+            {
+                if (Input.GetButtonUp(keyPlayer + " " + keyButton))
+                {
+                    print("break");
+                    Break(currentStuff);
+                }
             }
         }
 
-        if (isHold)
-        {
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                print("break");
-                Break(currentStuff);
-            }
-        }
 
 
 
-        /* TEST */
+        ///* TEST */
 
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            print("Test Work : Press Y");
-            print("Name current : " + currentStuff.name);
-            Hold(currentStuff);
-        }
+        //if (Input.GetKeyDown(KeyCode.Y))
+        //{
+        //    print("Test Work : Press Y");
+        //    print("Name current : " + currentStuff.name);
+        //    Hold(currentStuff);
+        //}
 
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            print("Test Work : Press Y");
-            Break(currentStuff);
-        }
+        //if (Input.GetKeyDown(KeyCode.K))
+        //{
+        //    print("Test Work : Press Y");
+        //    Break(currentStuff);
+        //}
 
     }
 
@@ -126,5 +180,5 @@ public class PlayerController : MonoBehaviour
             print("isEnter : False");
         }
     }
-    
+
 }
