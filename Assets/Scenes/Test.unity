@@ -89,7 +89,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1596,6 +1596,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  resetSpeedAfter: 3
+  setSpeed: 3
+  resetStaminaAfter: 3
+  setStamina: 3
 --- !u!114 &1401158505
 MonoBehaviour:
   m_ObjectHideFlags: 0

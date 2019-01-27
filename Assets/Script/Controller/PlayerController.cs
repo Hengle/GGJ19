@@ -57,11 +57,15 @@ public class PlayerController : MonoBehaviour
 
     HandState state = HandState.normal;
 
+    public bool isRedTeam;
+    private float startSpeed;
+
     void Start()
     {
         cf = FindObjectOfType<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        startSpeed = speedMove;
     }
 
     void JoystickController()
@@ -134,7 +138,7 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity = dir * speedMove;
-
+        
         return velocity;
     }
 
@@ -246,6 +250,12 @@ public class PlayerController : MonoBehaviour
         {
             isEnter = true;
             currentStuff = other.transform;
+        }
+
+        if (other.tag == "PowerUp")
+        {
+            print("Power Up Aldım");
+            other.GetComponent<PowerUpController>().Use(this);
         }
     }
 
@@ -455,10 +465,18 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         }
-
-
-
     }
 
     #endregion
+
+    public void SetSpeed(float newSpeed)
+    {
+        speedMove = newSpeed;
+    }
+
+    public void ResetSpeed()
+    {
+        speedMove = startSpeed;
+    }
+
 }

@@ -1,72 +1,109 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PowerUpManager : MonoBehaviour
 {
-	private TransformFunctions TF;
+    private TransformFunctions TF;
 
-	[Header("Power Up Creating")] public  GameObject     powerUpObject;
-	[Range(0, 60)]                public  float          minCreatingTime = 5f;
-	[Range(0, 60)]                public  float          maxCreatingTime = 15f;
-	[SerializeField]              private Transform      minPoint;
-	[SerializeField]              private Transform      maxPoint;
-	[Range(0, 2)]                 private float          showTime;
-	[SerializeField]              private AnimationCurve showCurve;
+    [Header("Power Up Creating")] public GameObject powerUpObject;
+    [Range(0, 60)] public float minCreatingTime = 5f;
+    [Range(0, 60)] public float maxCreatingTime = 15f;
+    [SerializeField] private Transform minPoint;
+    [SerializeField] private Transform maxPoint;
+    [Range(0, 2)] private float showTime;
+    [SerializeField] private AnimationCurve showCurve;
 
-	private float nextCreationTime;
+    [Header("Speed Power Up")]
+    [Range(0, 10)]
+    public float resetSpeedAfter = 3f;
+
+    [Range(1, 10)] public float setSpeed = 3f;
+
+    [Header("Stamina Power Up")]
+    [Range(0, 10)]
+    public float resetStaminaAfter = 3f;
+
+    [Range(1, 10)] public float setStamina = 3f;
 
 
-	void Start()
-	{
-		TF               = FindObjectOfType<TransformFunctions>();
-		nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
-		StartCoroutine(CreatePowerUp());
-	}
+    private float nextCreationTime;
 
-	IEnumerator CreatePowerUp()
-	{
-		yield return new WaitForSeconds(nextCreationTime);
+    private PlayerController[] players;
+    
+    void Start()
+    {
+        TF = FindObjectOfType<TransformFunctions>();
+        nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
+        StartCoroutine(CreatePowerUp());
+        players = FindObjectsOfType<PlayerController>();
+    }
 
-		GameObject newPU = Instantiate(powerUpObject);
-		newPU.transform.localPosition = new Vector3(
-			Random.Range(minPoint.transform.position.x, maxPoint.transform.position.x),
-			0.1f,
-			Random.Range(minPoint.transform.position.z, maxPoint.transform.position.z)
-		);
-		newPU.transform.localScale = Vector3.zero;
-		TF.Scale(newPU.transform, Vector3.one, 0f, 0.5f, showCurve);
+    IEnumerator CreatePowerUp()
+    {
+        yield return new WaitForSeconds(nextCreationTime);
 
-		nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
-		StartCoroutine(CreatePowerUp());
-	}
+        GameObject newPU = Instantiate(powerUpObject);
+        newPU.transform.localPosition = new Vector3(
+            Random.Range(minPoint.transform.position.x, maxPoint.transform.position.x),
+            0.1f,
+            Random.Range(minPoint.transform.position.z, maxPoint.transform.position.z)
+        );
+        newPU.transform.localScale = Vector3.zero;
+        TF.Scale(newPU.transform, Vector3.one, 0f, 0.5f, showCurve);
 
-	public void PowerUp(PowerUpType type, PlayerController player)
-	{
-		switch(type)
-		{
-			case PowerUpType.Stamina:
-				Stamina(player);
-				break;
-			case PowerUpType.Heavier:
-				Heavier(player);
-				break;
-			case PowerUpType.Speed:
-				Speed(player);
-				break;
-		}
-	}
+        nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
+        StartCoroutine(CreatePowerUp());
+    }
 
-	void Stamina(PlayerController player) {}
+    public void PowerUp(PowerUpType type, PlayerController player)
+    {
+        switch (type)
+        {
+            case PowerUpType.Stamina:
+                Stamina(player);
+                break;
+            case PowerUpType.Heavier:
+                Heavier(player);
+                break;
+            case PowerUpType.Speed:
+                Speed(player);
+                break;
+        }
+    }
 
-	void Speed(PlayerController player) {}
+    void Stamina(PlayerController player)
+    {
+        player.UpQuickly();
+    }
 
-	void Heavier(PlayerController player) {}
+    void Speed(PlayerController player)
+    {
+        player.SetSpeed(setSpeed);
+        StartCoroutine(_ResetSpeed(player));
+    }
+
+    void Heavier(PlayerController player)
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].isRedTeam != player.isRedTeam)
+            {
+                player.DownQuickly();
+            }
+        }
+    }
+
+    IEnumerator _ResetSpeed(PlayerController player)
+    {
+        yield return new WaitForSeconds(resetSpeedAfter);
+
+        player.ResetSpeed();
+    }
 }
 
 public enum PowerUpType
 {
-	Stamina,
-	Speed,
-	Heavier
+    Stamina,
+    Speed,
+    Heavier
 }

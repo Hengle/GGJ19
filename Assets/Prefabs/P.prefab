@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8094275405939091543}
   - component: {fileID: 8094275405939091539}
   m_Layer: 10
-  m_Name: P4
+  m_Name: P
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,4 +123,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b59da064c6dde4598fd32615f58a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  spriteHold: {fileID: 0}
+  spriteIdle: {fileID: 0}
+  isKeyboard: 0
+  keyPlayer: 'joystick 1 '
+  keyButton: button 4
+  speedMove: 0
+  speedDownStamina: 1
+  speedUpStamina: 1
+  speedUpStaminaQuickly: 20
+  speedDownStaminaQuickly: 20
+  isEnter: 0
+  stamina: 100
+  isDead: 0
+  isRedTeam: 0
