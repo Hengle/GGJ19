@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum HandState
 {
@@ -16,14 +14,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Sprite spriteHold;
     [SerializeField]
-    Sprite spriteNormal;
+    Sprite spriteIdle;
 
-    [SerializeField]
-    float speedColorAlpha;
 
-    SpriteRenderer spriteRenderer;
-
-    [Header("This Is Keyboard")]
+    [Header("This is Keyboard")]
     [SerializeField]
     bool isKeyboard;
 
@@ -34,27 +28,32 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     string keyButton = "button 4";
 
+    [Header("Player Ability")]
+    [SerializeField] float speedMove;
+    [SerializeField] float speedDownStamina = 15;
+    [SerializeField] float speedUpStamina = 15;
+    [SerializeField] float speedUpStaminaQuickly = 20;
+    [SerializeField] float speedDownStaminaQuickly = 20;
+
     Rigidbody rg;
-
-    [SerializeField]
-    float speedMove;
-
+    SpriteRenderer spriteRenderer;
     Transform currentStuff = null;
 
     bool allowHold;
     bool isHold;
     public bool isEnter;
-    [SerializeField] float vertical;
-    [SerializeField] float horizontal;
+    float vertical;
+    float horizontal;
 
     public float stamina = 100;
     float staminaMax = 100;
-    [SerializeField] float speedDownStamina = 1;
-    [SerializeField] float speedUpStamina = 1;
 
     ColorFunctions cf;
 
-    bool isDead;
+    Coroutine current;
+    Coroutine colorFlip;
+
+    public bool isDead;
 
     HandState state = HandState.normal;
 
@@ -85,36 +84,43 @@ public class PlayerController : MonoBehaviour
 
         if (isEnter)
         {
-            if (!isKeyboard && Input.GetKey(keyPlayer + " " + keyButton))
+            if (Input.GetKey(keyPlayer + " " + keyButton))
             {
                 if (!isHold && !isDead)
                 {
                     Hold(currentStuff);
                 }
             }
-            else if (isHold)
+            else
             {
-                Break(currentStuff);
+                if (isHold) //Daha önce tutmus ise bir yerleri
+                {
+                    Break(currentStuff);
+                }
             }
-            else if (gameObject.GetComponent<CharacterJoint>() != null)
-            {
-                Break(currentStuff);
-            }
+            //if (isHold)
+            //{
+            //    Break(currentStuff);
+            //}
+            //else if (gameObject.GetComponent<CharacterJoint>() != null)
+            //{
+            //    Break(currentStuff);
+            //}
         }
-        else
-        {
-            if (isHold)
-            {
-                Break(currentStuff);
-            }
-            else if (gameObject.GetComponent<CharacterJoint>() != null)
-            {
-                Break(currentStuff);
-            }
-        }
+        //else
+        //{
+        //    if (isHold)
+        //    {
+        //        Break(currentStuff);
+        //    }
+        //    else if (gameObject.GetComponent<CharacterJoint>() != null)
+        //    {
+        //        Break(currentStuff);
+        //    }
+        //}
     }
 
-    void KeyboardController()
+    Vector3 GetVelocity()
     {
         vertical = Input.GetAxis("Vertical");
         horizontal = Input.GetAxis("Horizontal");
@@ -129,39 +135,52 @@ public class PlayerController : MonoBehaviour
 
         velocity = dir * speedMove;
 
-        rg.velocity = velocity;
+        return velocity;
+    }
+
+    void KeyboardController()
+    {
+        rg.velocity = GetVelocity();
 
         /* HOLD */
+        if (isDead)
+        {
+            print("Öldün");
+            return;
+        }
 
         if (isEnter)
         {
-            if (isKeyboard && Input.GetKey(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space)) //Space'e basıyorsa 
             {
-                if (!isHold && !isDead)
+                if (!isHold && !isDead) // 1 kere calısmasını istiyoruz.
                 {
                     Hold(currentStuff);
                 }
             }
-            else if (isHold)
+            else //Space basmıyor ve içerde ise.
             {
-                Break(currentStuff);
+                if (isHold) //Daha önce tutmus ise bir yerleri
+                {
+                    Break(currentStuff);
+                }
             }
-            else if (gameObject.GetComponent<CharacterJoint>() != null)
-            {
-                Break(currentStuff);
-            }
+            //else if (gameObject.GetComponent<CharacterJoint>() != null)
+            //{
+            //    Break(currentStuff);
+            //}
         }
-        else
-        {
-            if (isHold)
-            {
-                Break(currentStuff);
-            }
-            else if (gameObject.GetComponent<CharacterJoint>() != null)
-            {
-                Break(currentStuff);
-            }
-        }
+        //else
+        //{
+        //    if (isHold)
+        //    {
+        //        Break(currentStuff);
+        //    }
+        //    else if (gameObject.GetComponent<CharacterJoint>() != null)
+        //    {
+        //        Break(currentStuff);
+        //    }
+        //}
     }
 
     void FixedUpdate()
@@ -174,25 +193,17 @@ public class PlayerController : MonoBehaviour
         {
             JoystickController();
         }
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-
-        }
-
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         HandController();
     }
 
     public void Hold(Transform current)
     {
+        print("Hold");
+
         ChangeHandSprite(spriteHold);
 
         //Kenime bir joint componenti ekle.
@@ -206,7 +217,6 @@ public class PlayerController : MonoBehaviour
 
         isHold = true;
 
-
         Down();
     }
 
@@ -214,7 +224,7 @@ public class PlayerController : MonoBehaviour
     {
         print("Break");
 
-        ChangeHandSprite(spriteNormal);
+        ChangeHandSprite(spriteIdle); //Hand turn Idle
 
         if (currentStuff != null)
         {
@@ -226,53 +236,8 @@ public class PlayerController : MonoBehaviour
         rg.angularVelocity = Vector3.zero;
 
         isHold = false;
-        
+
         Up();
-    }
-
-    Coroutine current;
-
-    public void Up()
-    {
-        if (current != null)
-        {
-            StopCoroutine(current);
-        }
-
-        current = StartCoroutine(_Up());
-    }
-
-    IEnumerator _Up()
-    {
-        while (stamina < staminaMax)
-        {
-            stamina += Time.deltaTime * speedUpStamina;
-            yield return null;
-        }
-
-        isDead = false;
-    }
-
-    public void Down()
-    {
-        if (current != null)
-        {
-            StopCoroutine(current);
-        }
-
-        current = StartCoroutine(_Down());
-    }
-
-    IEnumerator _Down()
-    {
-        while (stamina > 0)
-        {
-            stamina -= Time.deltaTime * speedDownStamina;
-            yield return null;
-        }
-
-        isDead = true;
-        print("Is Dead");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -293,27 +258,84 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region Stamina
+
+    public void Up()
+    {
+        if (current != null)
+        {
+            StopCoroutine(current);
+        }
+
+        current = StartCoroutine(_Up(speedUpStamina));
+    }
+
+    public void UpQuickly()
+    {
+        if (current != null)
+        {
+            StopCoroutine(current);
+        }
+
+        current = StartCoroutine(_Up(speedUpStaminaQuickly));
+    }
+
+    IEnumerator _Up(float speed)
+    {
+        while (stamina < staminaMax)
+        {
+            stamina += Time.deltaTime * speed;
+            yield return null;
+        }
+
+        isDead = false;
+    }
+
+    public void Down()
+    {
+        if (current != null)
+        {
+            StopCoroutine(current);
+        }
+
+        current = StartCoroutine(_Down(speedDownStamina));
+    }
+
+    public void DownQuickly()
+    {
+        if (current != null)
+        {
+            StopCoroutine(current);
+        }
+
+        current = StartCoroutine(_Down(speedDownStaminaQuickly));
+    }
+
+    IEnumerator _Down(float speed)
+    {
+        while (stamina > 0)
+        {
+            stamina -= Time.deltaTime * speed;
+            yield return null;
+        }
+
+        isDead = true;
+        print("Is Dead");
+    }
+
+    #endregion
+
+
+    #region Hand Color
+
     void ChangeHandSprite(Sprite sprite)
     {
         spriteRenderer.sprite = sprite;
     }
 
-    Coroutine colorFlip;
-    IEnumerator _ChangeColor(Transform current, float time, float minAlpha, float maxAlpha)
-    {
-        while (true)
-        {
-            print("calısıyorum");
-            cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: minAlpha), 0, time);
-            yield return new WaitForSeconds(time);
-            cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: maxAlpha), 0, time);
-            yield return new WaitForSeconds(time);
-        }
-    }
-
     void HandTiredStart()
     {
-        colorFlip = StartCoroutine(_ChangeColor(transform, 0.3f, 0.45f , 0.95f));
+        colorFlip = StartCoroutine(cf._ChangeColorLoop(transform, 0.3f, 0.45f, 0.95f));
     }
 
     void StopHandTired()
@@ -333,6 +355,10 @@ public class PlayerController : MonoBehaviour
     {
         cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: 1f), 0, 0.2f);
     }
+
+    #endregion
+
+    #region Listener
 
     bool[] onWorked = new bool[4] { true, true, true, true };
 
@@ -374,6 +400,8 @@ public class PlayerController : MonoBehaviour
                 HandTiredStart();
 
                 SetArray(0);
+
+                return;
             }
         }
 
@@ -382,7 +410,7 @@ public class PlayerController : MonoBehaviour
             if (HandState.tired == state && stamina < 10)
             {
                 state = HandState.dead;
-
+                isDead = true;
                 print("tireden dead'e ");
 
                 StopHandTired();
@@ -391,12 +419,14 @@ public class PlayerController : MonoBehaviour
                 Break(currentStuff);
 
                 SetArray(1);
+
+                return;
             }
         }
 
         if (BoolControl(2))
         {
-            if (HandState.dead == state && stamina > 40)
+            if (HandState.dead == state && stamina > 98)
             {
                 print("deadden normale");
                 state = HandState.normal;
@@ -405,6 +435,8 @@ public class PlayerController : MonoBehaviour
                 HandColorNormal();
 
                 SetArray(2);
+
+                return;
             }
         }
 
@@ -419,10 +451,14 @@ public class PlayerController : MonoBehaviour
                 HandColorNormal();
 
                 SetArray(3);
+
+                return;
             }
         }
 
 
 
     }
+
+    #endregion
 }

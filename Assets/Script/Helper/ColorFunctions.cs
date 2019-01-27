@@ -154,6 +154,18 @@ public class ColorFunctions : MonoBehaviour
         }
     }
 
+    public IEnumerator _ChangeColorLoop(Transform current, float time, float minAlpha, float maxAlpha)
+    {
+        SpriteRenderer renderer = current.GetComponent<SpriteRenderer>();
+        while (true)
+        {
+            print("Elimin Loop Alpha Degişimi..");
+            ColorTransition(renderer, renderer.color.With(a: minAlpha), 0, time);
+            yield return new WaitForSeconds(time);
+            ColorTransition(renderer, renderer.color.With(a: maxAlpha), 0, time);
+            yield return new WaitForSeconds(time);
+        }
+    }
 
 
 }
