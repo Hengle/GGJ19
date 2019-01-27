@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum HandState
+{
+    normal,
+    tired,
+    dead
+}
+
 public class PlayerController : MonoBehaviour
 {
     [Header("Hand Image")]
@@ -42,10 +49,14 @@ public class PlayerController : MonoBehaviour
 
     public float stamina = 100;
     float staminaMax = 100;
-    float speedDown = 1;
-    float speedUp = 1;
+    [SerializeField] float speedDownStamina = 1;
+    [SerializeField] float speedUpStamina = 1;
 
     ColorFunctions cf;
+
+    bool isDead;
+
+    HandState state = HandState.normal;
 
     void Start()
     {
@@ -76,7 +87,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isKeyboard && Input.GetKey(keyPlayer + " " + keyButton))
             {
-                if (!isHold)
+                if (!isHold && !isDead)
                 {
                     Hold(currentStuff);
                 }
@@ -126,7 +137,7 @@ public class PlayerController : MonoBehaviour
         {
             if (isKeyboard && Input.GetKey(KeyCode.Space))
             {
-                if (!isHold)
+                if (!isHold && !isDead)
                 {
                     Hold(currentStuff);
                 }
@@ -166,14 +177,18 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            allowTiredWork = true;
-            StartCoroutine(ChangeColor(transform, speedColorAlpha, 0.2f));
+
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            allowTiredWork = false;
+
         }
 
+    }
+
+    private void Update()
+    {
+        HandController();
     }
 
     public void Hold(Transform current)
@@ -230,9 +245,11 @@ public class PlayerController : MonoBehaviour
     {
         while (stamina < staminaMax)
         {
-            stamina += Time.deltaTime * speedUp;
+            stamina += Time.deltaTime * speedUpStamina;
             yield return null;
         }
+
+        isDead = false;
     }
 
     public void Down()
@@ -249,18 +266,18 @@ public class PlayerController : MonoBehaviour
     {
         while (stamina > 0)
         {
-            stamina -= Time.deltaTime * speedDown;
+            stamina -= Time.deltaTime * speedDownStamina;
             yield return null;
         }
+
+        isDead = true;
 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        print("OnTrigger Enter");
         if (other.tag == "Stuff" && isEnter == false)
         {
-            print("isEnter : True");
             isEnter = true;
             currentStuff = other.transform;
         }
@@ -268,12 +285,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        print("OnTrigger Exit");
         if (other.tag == "Stuff" && other.transform == currentStuff)
         {
             currentStuff = null;
             isEnter = false;
-            print("isEnter : False");
         }
     }
 
@@ -282,35 +297,131 @@ public class PlayerController : MonoBehaviour
         spriteRenderer.sprite = sprite;
     }
 
-    bool allowTiredWork;
-    IEnumerator ChangeColor(Transform current, float speed, float minAlpha)
+    Coroutine colorFlip;
+    IEnumerator _ChangeColor(Transform current, float time, float minAlpha, float maxAlpha)
     {
-        float passed = 0;
-        SpriteRenderer spriteRenderer = current.GetComponent<SpriteRenderer>();
-
-        Color color1 = spriteRenderer.color;
-        Color color2 = new Color(1, 1, 1, minAlpha);
-        while (allowTiredWork)
+        while (true)
         {
-            passed += Time.deltaTime;
-            float opacity = Mathf.Sin(passed * speed) * 0.5f + 0.5f;
-
-            spriteRenderer.color = Color.Lerp(color1, color2, opacity);
-            yield return null;
+            print("calısıyorum");
+            cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: minAlpha), 0, time);
+            yield return new WaitForSeconds(time);
+            cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: maxAlpha), 0, time);
+            yield return new WaitForSeconds(time);
         }
-
-        //Burada da son birkez renk artırılır belki
     }
 
     void HandTiredStart()
     {
-        allowTiredWork = true;
-        StartCoroutine(ChangeColor(transform, speedColorAlpha, 0.2f));
+        colorFlip = StartCoroutine(_ChangeColor(transform, 0.3f, 0.45f , 0.95f));
     }
 
     void StopHandTired()
     {
-        allowTiredWork = false;
+        if (colorFlip != null)
+        {
+            StopCoroutine(colorFlip);
+        }
     }
 
+    void DeadColorHand()
+    {
+        cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: .35f), 0, 0.2f);
+    }
+
+    void HandColorNormal()
+    {
+        cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: 1f), 0, 0.2f);
+    }
+
+    bool[] onWorked = new bool[4] { true, true, true, true };
+
+    void SetArray(int index)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            onWorked[i] = true;
+        }
+
+        onWorked[index] = false;
+    }
+
+    bool BoolControl(int index)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (onWorked[i] == true)
+            {
+                if (i == index)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void HandController()
+    {
+        if (BoolControl(0))
+        {
+            if (HandState.normal == state && stamina < 40)
+            {
+                print("normalde tired 'e ");
+                state = HandState.tired;
+
+                HandTiredStart();
+
+                SetArray(0);
+            }
+        }
+
+        if (BoolControl(1))
+        {
+            if (HandState.tired == state && stamina < 10)
+            {
+                state = HandState.dead;
+
+                print("tireden dead'e ");
+
+                StopHandTired();
+                DeadColorHand();
+
+                Break(currentStuff);
+
+                SetArray(1);
+            }
+        }
+
+        if (BoolControl(2))
+        {
+            if (HandState.dead == state && stamina > 40)
+            {
+                print("deadden normale");
+                state = HandState.normal;
+
+                StopHandTired();
+                HandColorNormal();
+
+                SetArray(2);
+            }
+        }
+
+        if (BoolControl(3))
+        {
+            if (HandState.tired == state && stamina > 40)
+            {
+                print("tridden normal");
+                state = HandState.normal;
+
+                StopHandTired();
+                HandColorNormal();
+
+                SetArray(3);
+            }
+        }
+
+
+
+    }
 }
