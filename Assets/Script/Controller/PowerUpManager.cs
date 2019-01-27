@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PowerUpManager : MonoBehaviour
@@ -14,7 +13,20 @@ public class PowerUpManager : MonoBehaviour
 	[Range(0, 2)]                 private float          showTime;
 	[SerializeField]              private AnimationCurve showCurve;
 
+	[Header("Speed Power Up")] [Range(0, 10)]
+	public float resetSpeedAfter = 3f;
+
+	[Range(1, 10)] public float setSpeed = 3f;
+
+	[Header("Stamina Power Up")] [Range(0, 10)]
+	public float resetStaminaAfter = 3f;
+
+	[Range(1, 10)] public float setStamina = 3f;
+
+
 	private float nextCreationTime;
+
+	private PlayerController[] players;
 
 
 	void Start()
@@ -22,6 +34,7 @@ public class PowerUpManager : MonoBehaviour
 		TF               = FindObjectOfType<TransformFunctions>();
 		nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
 		StartCoroutine(CreatePowerUp());
+		players = FindObjectsOfType<PlayerController>();
 	}
 
 	IEnumerator CreatePowerUp()
@@ -57,11 +70,34 @@ public class PowerUpManager : MonoBehaviour
 		}
 	}
 
-	void Stamina(PlayerController player) {}
+	void Stamina(PlayerController player)
+	{
+//		player.StaminaVer();
+	}
 
-	void Speed(PlayerController player) {}
+	void Speed(PlayerController player)
+	{
+		player.SetSpeed(setSpeed);
+		StartCoroutine(_ResetSpeed(player));
+	}
 
-	void Heavier(PlayerController player) {}
+	void Heavier(PlayerController player)
+	{
+		for(int i = 0; i < players.Length; i++)
+		{
+			if(players[i].isRedTeam != player.isRedTeam)
+			{
+//				players[i].StaminaBitir();
+			}
+		}
+	}
+
+	IEnumerator _ResetSpeed(PlayerController player)
+	{
+		yield return new WaitForSeconds(resetSpeedAfter);
+
+		player.ResetSpeed();
+	}
 }
 
 public enum PowerUpType

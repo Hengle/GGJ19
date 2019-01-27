@@ -58,11 +58,15 @@ public class PlayerController : MonoBehaviour
 
     HandState state = HandState.normal;
 
+    public bool isRedTeam;
+    private float startSpeed;
+
     void Start()
     {
         cf = FindObjectOfType<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        startSpeed = speedMove;
     }
 
     void JoystickController()
@@ -424,5 +428,15 @@ public class PlayerController : MonoBehaviour
 
 
 
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        speedMove = newSpeed;
+    }
+
+    public void ResetSpeed()
+    {
+        speedMove = startSpeed;
     }
 }
