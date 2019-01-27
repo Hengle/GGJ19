@@ -212,6 +212,8 @@ public class PlayerController : MonoBehaviour
 
     public void Break(Transform currentStuff)
     {
+        print("Break");
+
         ChangeHandSprite(spriteNormal);
 
         if (currentStuff != null)
@@ -224,8 +226,7 @@ public class PlayerController : MonoBehaviour
         rg.angularVelocity = Vector3.zero;
 
         isHold = false;
-
-
+        
         Up();
     }
 
@@ -271,7 +272,7 @@ public class PlayerController : MonoBehaviour
         }
 
         isDead = true;
-
+        print("Is Dead");
     }
 
     private void OnTriggerEnter(Collider other)
