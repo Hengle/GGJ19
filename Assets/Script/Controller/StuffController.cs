@@ -25,8 +25,11 @@ public class StuffController : MonoBehaviour
 
     public void Break(PlayerController PC)
     {
-        rg.velocity = Vector3.zero;
-        rg.angularVelocity = Vector3.zero;
+        if (rg != null)
+        {
+            rg.velocity = Vector3.zero;
+            rg.angularVelocity = Vector3.zero;
+        }
 
         if (PCs.Contains(PC)) PCs.Remove(PC);
 
@@ -48,8 +51,19 @@ public class StuffController : MonoBehaviour
     {
         int value = mass;
         int factor = count * rate;
+        int x = mass - factor;
+        if (x < 0)
+        {
+            rg.mass = 1;
+        }
+        else
+        {
+            if (rg != null)
+            {
+                rg.mass = x;
+            }
+        }
 
-        rg.mass = mass - factor;
     }
 
     private void OnTriggerEnter(Collider other)

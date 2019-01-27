@@ -29,7 +29,7 @@ public class PowerUpManager : MonoBehaviour
     private float nextCreationTime;
 
     private PlayerController[] players;
-    
+
     void Start()
     {
         TF = FindObjectOfType<TransformFunctions>();
