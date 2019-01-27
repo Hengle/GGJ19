@@ -183,17 +183,17 @@ public class PlayerController : MonoBehaviour
             //    Break(currentStuff);
             //}
         }
-        //else
-        //{
-        //    if (isHold)
-        //    {
-        //        Break(currentStuff);
-        //    }
-        //    else if (gameObject.GetComponent<CharacterJoint>() != null)
-        //    {
-        //        Break(currentStuff);
-        //    }
-        //}
+        else
+        {
+            if (isHold)
+            {
+                Break(currentStuff);
+            }
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+        }
     }
 
     Vector3 GetVelocity()
@@ -246,17 +246,17 @@ public class PlayerController : MonoBehaviour
             //    Break(currentStuff);
             //}
         }
-        //else
-        //{
-        //    if (isHold)
-        //    {
-        //        Break(currentStuff);
-        //    }
-        //    else if (gameObject.GetComponent<CharacterJoint>() != null)
-        //    {
-        //        Break(currentStuff);
-        //    }
-        //}
+        else
+        {
+            if (isHold)
+            {
+                Break(currentStuff);
+            }
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+        }
     }
 
     void FixedUpdate()

@@ -10,6 +10,11 @@ public class ScoreController : MonoBehaviour
 
     [SerializeField] Transform parentStuff;
 
+    [SerializeField] Transform panelOrigin;
+    [SerializeField] Transform panelFinish;
+    [SerializeField] Transform winRed;
+    [SerializeField] Transform winBlue;
+
     public int leftScore = 0;
     public int rightScore = 0;
 
@@ -47,9 +52,25 @@ public class ScoreController : MonoBehaviour
         }
     }
 
+    bool isWinBlue;
     void FinishGame()
     {
-        print("oyun biter");
+        if (leftScore > rightScore)
+        {
+            isWinBlue = true;
+        }
+
+        panelFinish.gameObject.SetActive(true);
+        panelOrigin.gameObject.SetActive(false);
+
+        if (!isWinBlue)
+        {
+            winRed.gameObject.SetActive(true);
+        }
+        else
+        {
+            winBlue.gameObject.SetActive(true);
+        }
 
     }
 
