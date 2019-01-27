@@ -60,12 +60,44 @@ public class PlayerController : MonoBehaviour
     public bool isRedTeam;
     private float startSpeed;
 
+    [Header("Start Position Target")]
+    [SerializeField] Transform startPosition;
+
+    [Header("Border")]
+    [SerializeField] Transform limitVertical;
+    [SerializeField] Transform limitHorizontal;
+
     void Start()
     {
         cf = FindObjectOfType<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startSpeed = speedMove;
+
+        transform.position = startPosition.position;
+    }
+
+    void PositionLimitController()
+    {
+        //Horizontal Controller
+        if (transform.position.x > limitHorizontal.position.x)
+        {
+            transform.position = transform.position.With(x: limitHorizontal.position.x);
+        }
+        else if (transform.position.x < -limitHorizontal.position.x)
+        {
+            transform.position = transform.position.With(x: -limitHorizontal.position.x);
+        }
+
+        //Vertical Controller
+        if (transform.position.z > limitVertical.position.z)
+        {
+            transform.position = transform.position.With(z: limitVertical.position.z);
+        }
+        else if (transform.position.z < -limitVertical.position.z)
+        {
+            transform.position = transform.position.With(z: -limitVertical.position.z);
+        }
     }
 
     void JoystickController()
@@ -138,7 +170,7 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity = dir * speedMove;
-        
+
         return velocity;
     }
 
@@ -202,6 +234,8 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         HandController();
+
+        PositionLimitController();
     }
 
     public void Hold(Transform current)
