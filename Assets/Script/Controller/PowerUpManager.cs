@@ -12,6 +12,7 @@ public class PowerUpManager : MonoBehaviour
     [SerializeField] private Transform maxPoint;
     [Range(0, 2)] private float showTime;
     [SerializeField] private AnimationCurve showCurve;
+    public GameObject powerUpContainer;
 
     [Header("Speed Power Up")]
     [Range(0, 10)]
@@ -43,13 +44,16 @@ public class PowerUpManager : MonoBehaviour
         yield return new WaitForSeconds(nextCreationTime);
 
         GameObject newPU = Instantiate(powerUpObject);
-        newPU.transform.localPosition = new Vector3(
+        GameObject newPUParent = Instantiate(powerUpContainer);
+        newPU.transform.SetParent(newPUParent.transform);
+        newPUParent.transform.localPosition = new Vector3(
             Random.Range(minPoint.transform.position.x, maxPoint.transform.position.x),
             0.1f,
             Random.Range(minPoint.transform.position.z, maxPoint.transform.position.z)
         );
+        Vector3 origS = newPU.transform.localScale;
         newPU.transform.localScale = Vector3.zero;
-        TF.Scale(newPU.transform, Vector3.one, 0f, 0.5f, showCurve);
+        TF.Scale(newPU.transform, origS, 0f, 0.5f, showCurve);
 
         nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
         StartCoroutine(CreatePowerUp());
@@ -88,7 +92,7 @@ public class PowerUpManager : MonoBehaviour
         {
             if (players[i].isRedTeam != player.isRedTeam)
             {
-                player.DownQuickly();
+                players[i].DownQuickly();
             }
         }
     }

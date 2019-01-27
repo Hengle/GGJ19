@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,12 +40,41 @@ public class AreaController : MonoBehaviour
 
 			Destroy(newSC.GetComponent<Rigidbody>());
 
+			if(newSC.GetComponent<AudioSource>() != null)
+			{
+				StartCoroutine(_SoundOut(newSC.GetComponent<AudioSource>()));
+			}
+
 			TF.Move(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
 			TF.Scale(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
 			TF.Rotate(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
 		}
 
 		SC.UpdateScore(area, CountStuffs());
+	}
+
+	IEnumerator _SoundOut(AudioSource AS)
+	{
+		GameObject.Find("Main Camera").GetComponent<AudioSource>().Play();
+		float passed = 0f;
+
+		ParticleSystem[] PSs = AS.GetComponentsInChildren<ParticleSystem>();
+
+		for(int i = 0; i < PSs.Length; i++)
+		{
+			PSs[i].Stop();
+		}
+
+		while(passed < 2f)
+		{
+			passed    += Time.deltaTime;
+			AS.volume =  1f - passed / 2f;
+
+			yield return null;
+		}
+
+		AS.volume = 0f;
+		AS.Stop();
 	}
 
 	public void Remove(StuffController newSC)

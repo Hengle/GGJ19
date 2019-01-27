@@ -167,21 +167,15 @@ public class PlayerController : MonoBehaviour
                     Hold(currentStuff);
                 }
             }
-            else
+            else if (isHold)
             {
-                if (isHold) //Daha önce tutmus ise bir yerleri
-                {
-                    Break(currentStuff);
-                }
+                Break(currentStuff);
             }
-            //if (isHold)
-            //{
-            //    Break(currentStuff);
-            //}
-            //else if (gameObject.GetComponent<CharacterJoint>() != null)
-            //{
-            //    Break(currentStuff);
-            //}
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+            
         }
         else
         {
@@ -234,17 +228,18 @@ public class PlayerController : MonoBehaviour
                     Hold(currentStuff);
                 }
             }
-            else //Space basmıyor ve içerde ise.
+            else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }//Space basmıyor ve içerde ise.
+            else
             {
                 if (isHold) //Daha önce tutmus ise bir yerleri
                 {
                     Break(currentStuff);
                 }
             }
-            //else if (gameObject.GetComponent<CharacterJoint>() != null)
-            //{
-            //    Break(currentStuff);
-            //}
+
         }
         else
         {
