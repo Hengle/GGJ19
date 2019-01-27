@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Stuff
   - Area
+  - PowerUp
   layers:
   - Default
   - TransparentFX
