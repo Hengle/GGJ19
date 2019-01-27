@@ -4,86 +4,86 @@ using UnityEngine;
 
 public class StuffController : MonoBehaviour
 {
-	Rigidbody             rg;
-	public AreaController activeAreaSide = null;
+    Rigidbody rg;
+    public AreaController activeAreaSide = null;
 
 
-	public int mass;
-	public int countHold;
+    public int mass;
+    public int countHold;
 
-	public int rate;
+    public int rate;
 
-	[Range(1, 100)] public int stuffValue = 1;
+    [Range(1, 100)] public int stuffValue = 1;
 
-	private List<PlayerController> PCs = new List<PlayerController>();
+    private List<PlayerController> PCs = new List<PlayerController>();
 
-	void Start()
-	{
-		rg      = GetComponent<Rigidbody>();
-		rg.mass = mass;
-	}
+    void Start()
+    {
+        rg = GetComponent<Rigidbody>();
+        rg.mass = mass;
+    }
 
-	public void Break(PlayerController PC)
-	{
-		rg.velocity        = Vector3.zero;
-		rg.angularVelocity = Vector3.zero;
+    public void Break(PlayerController PC)
+    {
+        rg.velocity = Vector3.zero;
+        rg.angularVelocity = Vector3.zero;
 
-		if(PCs.Contains(PC)) PCs.Remove(PC);
+        if (PCs.Contains(PC)) PCs.Remove(PC);
 
-		countHold--;
-		SettingMass(countHold);
-	}
+        countHold--;
+        SettingMass(countHold);
+    }
 
 
-	public void Hold(PlayerController PC)
-	{
-		countHold++;
+    public void Hold(PlayerController PC)
+    {
+        countHold++;
 
-		if(!PCs.Contains(PC)) PCs.Add(PC);
+        if (!PCs.Contains(PC)) PCs.Add(PC);
 
-		SettingMass(countHold);
-	}
+        SettingMass(countHold);
+    }
 
-	void SettingMass(int count)
-	{
-		int value  = mass;
-		int factor = count * rate;
+    void SettingMass(int count)
+    {
+        int value = mass;
+        int factor = count * rate;
 
-		rg.mass = mass - factor;
-	}
+        rg.mass = mass - factor;
+    }
 
-	private void OnTriggerEnter(Collider other)
-	{
-		if(other.CompareTag("Stuff"))
-		{
-			print("Enter");
-		}
-		else if(other.name == "LeftSide" || other.name == "RightSide")
-		{
-			activeAreaSide = other.GetComponent<AreaController>();
-		}
-	}
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Stuff"))
+        {
+            print("Enter");
+        }
+        else if (other.name == "LeftSide" || other.name == "RightSide")
+        {
+            activeAreaSide = other.GetComponent<AreaController>();
+        }
+    }
 
-	private void OnTriggerExit(Collider other)
-	{
-		switch(other.name)
-		{
-			case "Neutral":
-				activeAreaSide.Add(this);
-				break;
-			case "LeftSide":
-			case "RightSide":
-				activeAreaSide = null;
-				break;
-		}
-	}
+    private void OnTriggerExit(Collider other)
+    {
+        switch (other.name)
+        {
+            case "Neutral":
+                activeAreaSide.Add(this);
+                break;
+            case "LeftSide":
+            case "RightSide":
+                activeAreaSide = null;
+                break;
+        }
+    }
 
-	public void BreakAllPlayers()
-	{
-		for(int i = 0; i < PCs.Count; i++)
-		{
-			PCs[0].isEnter = false;
-			PCs[0].Break(transform);
-		}
-	}
+    public void BreakAllPlayers()
+    {
+        for (int i = 0; i < PCs.Count; i++)
+        {
+            PCs[0].isEnter = false;
+            PCs[0].Break(transform);
+        }
+    }
 }

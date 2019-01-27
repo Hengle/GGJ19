@@ -1,6 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+public enum UIState
+{
+    idle,
+    hold,
+    tired,
+    dead
+}
+
 public enum HandState
 {
     normal,
@@ -34,6 +42,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float speedUpStamina = 15;
     [SerializeField] float speedUpStaminaQuickly = 20;
     [SerializeField] float speedDownStaminaQuickly = 20;
+
+    [Header("Animation UI")]
+    [SerializeField] Transform uiIdle;
+    [SerializeField] Transform uiHold;
+    [SerializeField] Transform uiTired;
+    [SerializeField] Transform uiDead;
 
     Rigidbody rg;
     SpriteRenderer spriteRenderer;
@@ -75,6 +89,32 @@ public class PlayerController : MonoBehaviour
         startSpeed = speedMove;
 
         transform.position = startPosition.position;
+    }
+
+    void ChangeUI(UIState state)
+    {
+        uiIdle.gameObject.SetActive(false);
+        uiHold.gameObject.SetActive(false);
+        uiTired.gameObject.SetActive(false);
+        uiDead.gameObject.SetActive(false);
+
+        switch (state)
+        {
+            case UIState.idle:
+                uiIdle.gameObject.SetActive(true);
+                break;
+            case UIState.hold:
+                uiHold.gameObject.SetActive(true);
+                break;
+            case UIState.tired:
+                uiTired.gameObject.SetActive(true);
+                break;
+            case UIState.dead:
+                uiDead.gameObject.SetActive(true);
+                break;
+            default:
+                break;
+        }
     }
 
     void PositionLimitController()
@@ -242,6 +282,8 @@ public class PlayerController : MonoBehaviour
     {
         print("Hold");
 
+        ChangeUI(UIState.hold);
+
         ChangeHandSprite(spriteHold);
 
         //Kenime bir joint componenti ekle.
@@ -261,6 +303,8 @@ public class PlayerController : MonoBehaviour
     public void Break(Transform currentStuff)
     {
         print("Break");
+
+        ChangeUI(UIState.idle);
 
         ChangeHandSprite(spriteIdle); //Hand turn Idle
 
@@ -445,6 +489,8 @@ public class PlayerController : MonoBehaviour
 
                 SetArray(0);
 
+                ChangeUI(UIState.tired);
+
                 return;
             }
         }
@@ -462,6 +508,8 @@ public class PlayerController : MonoBehaviour
 
                 Break(currentStuff);
 
+                ChangeUI(UIState.dead);
+
                 SetArray(1);
 
                 return;
@@ -478,6 +526,8 @@ public class PlayerController : MonoBehaviour
                 StopHandTired();
                 HandColorNormal();
 
+                ChangeUI(UIState.idle);
+
                 SetArray(2);
 
                 return;
@@ -493,6 +543,8 @@ public class PlayerController : MonoBehaviour
 
                 StopHandTired();
                 HandColorNormal();
+
+                ChangeUI(UIState.idle);
 
                 SetArray(3);
 
