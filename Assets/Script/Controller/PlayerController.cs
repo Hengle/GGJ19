@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
             {
                 Break(currentStuff);
             }
-            
+
         }
         else
         {
@@ -187,6 +187,7 @@ public class PlayerController : MonoBehaviour
             {
                 Break(currentStuff);
             }
+
         }
     }
 
@@ -238,6 +239,7 @@ public class PlayerController : MonoBehaviour
                 {
                     Break(currentStuff);
                 }
+
             }
 
         }
@@ -248,6 +250,10 @@ public class PlayerController : MonoBehaviour
                 Break(currentStuff);
             }
             else if (gameObject.GetComponent<CharacterJoint>() != null)
+            {
+                Break(currentStuff);
+            }
+            else if (!Input.GetKey(KeyCode.Space))
             {
                 Break(currentStuff);
             }
@@ -298,7 +304,6 @@ public class PlayerController : MonoBehaviour
     public void Break(Transform currentStuff)
     {
         print("Break");
-
         ChangeUI(UIState.idle);
 
         ChangeHandSprite(spriteIdle); //Hand turn Idle
@@ -334,7 +339,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Stuff" && other.transform == currentStuff)
+        if (other.tag == "Stuff" && !isHold)
         {
             currentStuff = null;
             isEnter = false;
