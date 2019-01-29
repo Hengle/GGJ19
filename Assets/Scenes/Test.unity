@@ -458,6 +458,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fec567129d6e1471c983d362a9c97ff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textLeft: {fileID: 0}
+  textRight: {fileID: 0}
+  parentStuff: {fileID: 0}
+  panelOrigin: {fileID: 0}
+  panelFinish: {fileID: 0}
+  winRed: {fileID: 0}
+  winBlue: {fileID: 0}
   leftScore: 0
   rightScore: 0
 --- !u!65 &600007432
@@ -1596,6 +1603,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  powerUpContainer: {fileID: 0}
   resetSpeedAfter: 3
   setSpeed: 3
   resetStaminaAfter: 3

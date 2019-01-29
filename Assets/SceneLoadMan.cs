@@ -6,10 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoadMan : MonoBehaviour
 {
+    ScoreController scoreController;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        scoreController = FindObjectOfType<ScoreController>();
     }
 
     // Update is called once per frame
@@ -18,6 +20,11 @@ public class SceneLoadMan : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.O))
         {
             SceneManager.LoadScene(1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            scoreController.FinishGame();
         }
     }
 }

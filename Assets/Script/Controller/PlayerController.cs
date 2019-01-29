@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Sprite spriteIdle;
 
-
     [Header("This is Keyboard")]
     [SerializeField]
     bool isKeyboard;
@@ -89,6 +88,8 @@ public class PlayerController : MonoBehaviour
         startSpeed = speedMove;
 
         transform.position = startPosition.position;
+
+        ChangeUI(UIState.idle);
     }
 
     void ChangeUI(UIState state)
@@ -555,6 +556,8 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    #region Speed
+
     public void SetSpeed(float newSpeed)
     {
         speedMove = newSpeed;
@@ -565,4 +568,5 @@ public class PlayerController : MonoBehaviour
         speedMove = startSpeed;
     }
 
+    #endregion
 }

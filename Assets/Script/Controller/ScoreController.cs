@@ -53,7 +53,7 @@ public class ScoreController : MonoBehaviour
     }
 
     bool isWinBlue;
-    void FinishGame()
+    public void FinishGame()
     {
         if (leftScore > rightScore)
         {
