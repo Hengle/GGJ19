@@ -80,6 +80,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform limitVertical;
     [SerializeField] Transform limitHorizontal;
 
+    [HideInInspector]
+    public InputSetting inputSetting;
+
     void Start()
     {
         cf = FindObjectOfType<ColorFunctions>();
