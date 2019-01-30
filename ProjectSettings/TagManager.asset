@@ -7,6 +7,7 @@ TagManager:
   - Stuff
   - Area
   - PowerUp
+  - Select
   layers:
   - Default
   - TransparentFX

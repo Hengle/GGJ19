@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SelectController : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class SelectController : MonoBehaviour
     // Start is called before the first frame update
 
     [SerializeField] PlayerController[] playerControllers;
-
+    [SerializeField] TextMeshProUGUI[] playerControlText;
 
     [SerializeField] InputSetting[] joypads;
     [SerializeField] InputSetting[] keyboards;
@@ -30,13 +31,42 @@ public class SelectController : MonoBehaviour
     [HideInInspector]
     public List<InputSetting> inputList = new List<InputSetting>();
 
-    void Start()
+    [Header("String Button Show")]
+    [SerializeField] string joypadMove;
+    [SerializeField] string joypadHold;
+    [SerializeField] string keyboard1Move;
+    [SerializeField] string keyboard1Hold;
+    [SerializeField] string keyboard2Move;
+    [SerializeField] string keyboard2Hold;
+
+    string move = "<color=#ff0000ff>Run</color>";
+    string hold = "<color=#0000ffff>HOLD & RELEASE</color>";
+
+    List<string> stringList = new List<string>();
+
+    string ChangeText(string moveP, string holP)
+    {
+        string result = moveP + " " + move + "\n" + holP + " " + hold;
+
+        return result;
+    }
+
+    void Awake()
     {
         int joypadCount = Input.GetJoystickNames().Length;
         print("joypad count : " + joypadCount);
 
         SetInput(joypadCount);
         SetPlayerControllerInput(joypadCount);
+
+        for (int i = 0; i < playerControllers.Length; i++)
+        {
+            if (playerControllers[i].inputSetting == null)
+            {
+                playerControllers[i].gameObject.SetActive(false);
+                playerControlText[i].gameObject.SetActive(false);
+            }
+        }
     }
 
     void SetInput(int joypadCount)
@@ -46,28 +76,49 @@ public class SelectController : MonoBehaviour
             case 0:
                 inputList.Add(keyboards[0]);
                 inputList.Add(keyboards[1]);
+
+                stringList.Add(ChangeText(keyboard1Move, keyboard1Hold)); //String atama işlemeleri
+                stringList.Add(ChangeText(keyboard2Move, keyboard2Hold));
                 break;
             case 1:
                 inputList.Add(keyboards[0]);
                 inputList.Add(joypads[0]);
+
+                stringList.Add(ChangeText(keyboard1Move, keyboard1Hold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
                 break;
             case 2:
                 inputList.Add(keyboards[0]);
                 inputList.Add(keyboards[1]);
                 inputList.Add(joypads[0]);
                 inputList.Add(joypads[1]);
+
+                stringList.Add(ChangeText(keyboard1Move, keyboard1Hold));
+                stringList.Add(ChangeText(keyboard2Move, keyboard2Hold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
                 break;
             case 3:
                 inputList.Add(keyboards[0]);
                 inputList.Add(joypads[0]);
                 inputList.Add(joypads[1]);
                 inputList.Add(joypads[2]);
+
+                stringList.Add(ChangeText(keyboard1Move, keyboard1Hold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
                 break;
             case 4:
                 inputList.Add(joypads[0]);
                 inputList.Add(joypads[1]);
                 inputList.Add(joypads[2]);
                 inputList.Add(joypads[3]);
+
+                stringList.Add(ChangeText(joypadMove, joypadHold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
+                stringList.Add(ChangeText(joypadMove, joypadHold));
                 break;
 
             default:
@@ -84,6 +135,9 @@ public class SelectController : MonoBehaviour
             //Playerları 1. ve 3. ye ata
             playerControllers[0].inputSetting = inputList[0];
             playerControllers[2].inputSetting = inputList[1];
+
+            playerControlText[0].text = stringList[0];
+            playerControlText[2].text = stringList[1];
         }
         else
         {
@@ -92,6 +146,11 @@ public class SelectController : MonoBehaviour
             playerControllers[1].inputSetting = inputList[1];
             playerControllers[2].inputSetting = inputList[2];
             playerControllers[3].inputSetting = inputList[3];
+
+            playerControlText[0].text = stringList[0];
+            playerControlText[1].text = stringList[1];
+            playerControlText[2].text = stringList[2];
+            playerControlText[3].text = stringList[3];
         }
     }
 

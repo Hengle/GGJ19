@@ -19,21 +19,8 @@ public enum HandState
 public class PlayerController : MonoBehaviour
 {
     [Header("Hand Image")]
-    [SerializeField]
-    Sprite spriteHold;
-    [SerializeField]
-    Sprite spriteIdle;
-
-    [Header("This is Keyboard")]
-    [SerializeField]
-    bool isKeyboard;
-
-    [Header("Buttons String")]
-    [SerializeField]
-    string keyPlayer = "joystick 1 ";
-
-    [SerializeField]
-    string keyButton = "button 4";
+    [SerializeField] Sprite spriteHold;
+    [SerializeField] Sprite spriteIdle;
 
     [Header("Player Ability")]
     [SerializeField] float speedMove;
@@ -47,6 +34,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform uiHold;
     [SerializeField] Transform uiTired;
     [SerializeField] Transform uiDead;
+
+    string keyHorizontal;
+    string keyVertical;
+    string keyJump;
 
     Rigidbody rg;
     SpriteRenderer spriteRenderer;
@@ -71,7 +62,7 @@ public class PlayerController : MonoBehaviour
     HandState state = HandState.normal;
 
     public bool isRedTeam;
-    private float startSpeed;
+    float startSpeed;
 
     [Header("Start Position Target")]
     [SerializeField] Transform startPosition;
@@ -80,19 +71,38 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform limitVertical;
     [SerializeField] Transform limitHorizontal;
 
-    [HideInInspector]
+    [Header("Shorting Layer")]
+    float selectUILayer = 25;
+    float gameplayLayer = 5;
+
+
     public InputSetting inputSetting;
+
+    [Header("Referans UI Select Start Position")]
+    [SerializeField] Transform selectPositionStart;
 
     void Start()
     {
+       
         cf = FindObjectOfType<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startSpeed = speedMove;
 
-        transform.position = startPosition.position;
+        keyHorizontal = inputSetting.keyHorizontal;
+        keyVertical = inputSetting.keyVertical;
+        keyJump = inputSetting.keyJump;
+
+        transform.position = selectPositionStart.position;
+        spriteRenderer.sortingOrder = 25;
 
         ChangeUI(UIState.idle);
+    }
+
+    void SetPositionStart()
+    {
+        transform.position = startPosition.position;
+        spriteRenderer.sortingLayerID = 5;
     }
 
     void ChangeUI(UIState state)
@@ -144,27 +154,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void JoystickController()
+
+    void InputController()
     {
-        vertical = Input.GetAxis(keyPlayer + " Vertical");
-        horizontal = Input.GetAxis(keyPlayer + " Horizontal");
+        rg.velocity = GetVelocity();
 
-        Vector3 velocity = Vector3.zero;
-        Vector3 dir = Vector3.zero;
-
-        if (vertical != 0 || horizontal != 0)
+        if (isDead)
         {
-            dir = (Vector3.forward * vertical) + (Vector3.right * horizontal);
+            print("Öldün");
+            return;
         }
-
-        velocity = dir * speedMove;
-        rg.velocity = velocity;
 
         /* HOLD */
 
         if (isEnter)
         {
-            if (Input.GetKey(keyPlayer + " " + keyButton))
+            if (Input.GetButton(keyJump))
             {
                 if (!isHold && !isDead)
                 {
@@ -195,10 +200,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    Vector3 GetVelocity()
+    private Vector3 GetVelocity()
     {
-        vertical = Input.GetAxis("Vertical");
-        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis(keyVertical);
+        horizontal = Input.GetAxis(keyHorizontal);
 
         Vector3 velocity = Vector3.zero;
         Vector3 dir = Vector3.zero;
@@ -208,72 +213,13 @@ public class PlayerController : MonoBehaviour
             dir = (Vector3.forward * vertical) + (Vector3.right * horizontal);
         }
 
-        velocity = dir * speedMove;
-
+        velocity = dir * speedMove; //Normalized ettik.
         return velocity;
-    }
-
-    void KeyboardController()
-    {
-        rg.velocity = GetVelocity();
-
-        /* HOLD */
-        if (isDead)
-        {
-            print("Öldün");
-            return;
-        }
-
-        if (isEnter)
-        {
-            if (Input.GetKey(KeyCode.Space)) //Space'e basıyorsa 
-            {
-                if (!isHold && !isDead) // 1 kere calısmasını istiyoruz.
-                {
-                    Hold(currentStuff);
-                }
-            }
-            else if (gameObject.GetComponent<CharacterJoint>() != null)
-            {
-                Break(currentStuff);
-            }//Space basmıyor ve içerde ise.
-            else
-            {
-                if (isHold) //Daha önce tutmus ise bir yerleri
-                {
-                    Break(currentStuff);
-                }
-
-            }
-
-        }
-        else
-        {
-            if (isHold)
-            {
-                Break(currentStuff);
-            }
-            else if (gameObject.GetComponent<CharacterJoint>() != null)
-            {
-                Break(currentStuff);
-            }
-            else if (!Input.GetKey(KeyCode.Space))
-            {
-                Break(currentStuff);
-            }
-        }
     }
 
     void FixedUpdate()
     {
-        if (isKeyboard)
-        {
-            KeyboardController();
-        }
-        else
-        {
-            JoystickController();
-        }
+        InputController();
     }
 
     private void LateUpdate()
@@ -338,6 +284,11 @@ public class PlayerController : MonoBehaviour
         {
             print("Power Up Aldım");
             other.GetComponent<PowerUpController>().Use(this);
+        }
+
+        if (other.tag == "Select")
+        {
+            print(other.name);
         }
     }
 
