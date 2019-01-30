@@ -365,6 +365,9 @@ MonoBehaviour:
   keyboard1Hold: SPACE
   keyboard2Move: ARROW
   keyboard2Hold: ENTER
+  canvasSelect: {fileID: 2119133666}
+  scObject: {fileID: 1401158503}
+  stuffParent: {fileID: 1064007540}
 --- !u!1 &43667314
 GameObject:
   m_ObjectHideFlags: 0
@@ -1252,6 +1255,16 @@ PrefabInstance:
       propertyPath: selectPositionStart
       value: 
       objectReference: {fileID: 763001394}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: collisonName
+      value: BlueBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: selectAnim
+      value: 
+      objectReference: {fileID: 1657478371}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_SortingOrder
@@ -11426,7 +11439,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 396741029}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: e52dcc9334862d94caba470b67d86bc0, type: 2}
   m_CullingMode: 0
@@ -11804,7 +11817,7 @@ GameObject:
   - component: {fileID: 446744751}
   - component: {fileID: 446744750}
   m_Layer: 5
-  m_Name: Red Label
+  m_Name: Warm Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11953,7 +11966,7 @@ GameObject:
   - component: {fileID: 466160993}
   - component: {fileID: 466160992}
   m_Layer: 5
-  m_Name: Box Collider (3)
+  m_Name: YellowBox
   m_TagString: Select
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12355,7 +12368,7 @@ GameObject:
   - component: {fileID: 510324547}
   - component: {fileID: 510324546}
   m_Layer: 5
-  m_Name: Blue Label
+  m_Name: Cold Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12920,6 +12933,16 @@ PrefabInstance:
       propertyPath: selectPositionStart
       value: 
       objectReference: {fileID: 1505916261}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: collisonName
+      value: RedBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: selectAnim
+      value: 
+      objectReference: {fileID: 396741031}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_Color.r
@@ -15102,6 +15125,16 @@ PrefabInstance:
       propertyPath: selectPositionStart
       value: 
       objectReference: {fileID: 773773245}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: collisonName
+      value: GreenBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: selectAnim
+      value: 
+      objectReference: {fileID: 1219054600}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_Color.b
@@ -15260,7 +15293,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201156007}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 078fce5f28baa5341a94f4336b037754, type: 2}
   m_CullingMode: 0
@@ -15532,7 +15565,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1219054598}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7106ac159c064c44186456e0b9442a28, type: 2}
   m_CullingMode: 0
@@ -16420,7 +16453,7 @@ GameObject:
   - component: {fileID: 1287484227}
   - component: {fileID: 1287484229}
   m_Layer: 5
-  m_Name: 'Box Collider '
+  m_Name: BlueBox
   m_TagString: Select
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17889,6 +17922,16 @@ PrefabInstance:
       propertyPath: selectPositionStart
       value: 
       objectReference: {fileID: 166470832}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: collisonName
+      value: YellowBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094275405939091539, guid: d6d8b53865b515e47b55dc13a6b88de1,
+        type: 3}
+      propertyPath: selectAnim
+      value: 
+      objectReference: {fileID: 1201156009}
     - target: {fileID: 8094275405939091537, guid: d6d8b53865b515e47b55dc13a6b88de1,
         type: 3}
       propertyPath: m_Color.r
@@ -18039,7 +18082,7 @@ GameObject:
   - component: {fileID: 1443115051}
   - component: {fileID: 1443115050}
   m_Layer: 5
-  m_Name: Box Collider (2)
+  m_Name: RedBox
   m_TagString: Select
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19412,7 +19455,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657478369}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: a2cbc19524c2ded4ebb6c3d3831c9c0f, type: 2}
   m_CullingMode: 0
@@ -20538,7 +20581,7 @@ GameObject:
   - component: {fileID: 1830586955}
   - component: {fileID: 1830586954}
   m_Layer: 5
-  m_Name: Box Collider (1)
+  m_Name: GreenBox
   m_TagString: Select
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

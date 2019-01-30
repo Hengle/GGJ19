@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     float staminaMax = 100;
 
     ColorFunctions cf;
+    SelectController selectController;
 
     Coroutine current;
     Coroutine colorFlip;
@@ -81,9 +82,18 @@ public class PlayerController : MonoBehaviour
     [Header("Referans UI Select Start Position")]
     [SerializeField] Transform selectPositionStart;
 
+
+    [Header("UI Select Collision Name")]
+    [SerializeField] string collisonName;
+
+    [Header("Select UI Animator")]
+    [SerializeField] Animator selectAnim;
+
+    public bool isReady;
+
     void Start()
     {
-       
+        selectController = FindObjectOfType<SelectController>();
         cf = FindObjectOfType<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -93,16 +103,25 @@ public class PlayerController : MonoBehaviour
         keyVertical = inputSetting.keyVertical;
         keyJump = inputSetting.keyJump;
 
-        transform.position = selectPositionStart.position;
-        spriteRenderer.sortingOrder = 25;
+        SetPositionUISelect();
 
         ChangeUI(UIState.idle);
     }
 
-    void SetPositionStart()
+    void SetPositionUISelect()
+    {
+        transform.position = selectPositionStart.position;
+        spriteRenderer.sortingOrder = 25;
+    }
+
+    public void SetPositionStart()
     {
         transform.position = startPosition.position;
-        spriteRenderer.sortingLayerID = 5;
+        spriteRenderer.sortingOrder = 5;
+
+        speedMove = startSpeed;
+
+        ChangeHandSprite(spriteIdle);
     }
 
     void ChangeUI(UIState state)
@@ -272,6 +291,8 @@ public class PlayerController : MonoBehaviour
         Up();
     }
 
+    #region Trigger
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Stuff" && isEnter == false)
@@ -285,11 +306,6 @@ public class PlayerController : MonoBehaviour
             print("Power Up Aldım");
             other.GetComponent<PowerUpController>().Use(this);
         }
-
-        if (other.tag == "Select")
-        {
-            print(other.name);
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -300,6 +316,32 @@ public class PlayerController : MonoBehaviour
             isEnter = false;
         }
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Select" && other.name == collisonName)
+        {
+            if (Input.GetButton(keyJump))
+            {
+                //Hold Yapabilir.
+                ChangeHandSprite(spriteHold);
+                isReady = true;
+                selectAnim.enabled = true;
+                speedMove = 0;
+
+                selectController.ReadyController();
+            }
+            else
+            {
+                ChangeHandSprite(spriteIdle);
+                selectAnim.enabled = false;
+                isReady = false;
+                speedMove = startSpeed;
+            }
+        }
+    }
+
+    #endregion
 
     #region Stamina
 

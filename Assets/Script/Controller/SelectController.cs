@@ -44,6 +44,16 @@ public class SelectController : MonoBehaviour
 
     List<string> stringList = new List<string>();
 
+    [Header("Canvas UI Select")]
+    [SerializeField] Transform canvasSelect;
+
+    [Header("Script Object")]
+    [SerializeField] Transform scObject;
+
+    [Header("Stuff Paren")]
+    [SerializeField] Transform stuffParent;
+
+
     string ChangeText(string moveP, string holP)
     {
         string result = moveP + " " + move + "\n" + holP + " " + hold;
@@ -154,5 +164,48 @@ public class SelectController : MonoBehaviour
         }
     }
 
+    public void ReadyController()
+    {
+        for (int i = 0; i < playerControllers.Length; i++)
+        {
+            if (playerControllers[i].gameObject.activeSelf)
+            {
+                if (!playerControllers[i].isReady)
+                {
+                    print("Hazır olmayan var");
+                    return;
+                }
+            }
+        }
 
+        //buraya kadar gelmis ise hepsi tamamdır.
+        print("Hepsi Hazır oyun baslasın");
+        Invoke("StartGame", .4f);
+    }
+
+    void StartGame()
+    {
+        //select uı kapanacak.
+        canvasSelect.gameObject.SetActive(false);
+
+        //oyuncuların position degiştirilecek
+        //Oyuncuların layer değiştirilecek
+        for (int i = 0; i < playerControllers.Length; i++)
+        {
+            if (playerControllers[i].gameObject.activeSelf)
+            {
+                playerControllers[i].SetPositionStart();
+            }
+        }
+
+        scObject.GetComponent<CameraController>().enabled = true;
+        scObject.GetComponent<PowerUpManager>().enabled = true;
+
+        //camera follow active edilecek.
+        //power manager active edilecek.
+
+        //objeleri aktif yap
+        stuffParent.gameObject.SetActive(true);
+
+    }
 }
