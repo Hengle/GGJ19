@@ -20,11 +20,11 @@ public class SelectController : MonoBehaviour
          
          */
 
-    // Start is called before the first frame update
-
-    [SerializeField] PlayerController[] playerControllers;
+    [Header("Player")]
+    [SerializeField] PlayerController[] playerControllers; 
     [SerializeField] TextMeshProUGUI[] playerControlText;
 
+    [Header("Setting Input")]
     [SerializeField] InputSetting[] joypads;
     [SerializeField] InputSetting[] keyboards;
 
@@ -40,7 +40,7 @@ public class SelectController : MonoBehaviour
     [SerializeField] string keyboard2Hold;
 
     string move = "<color=#ff0000ff>Run</color>";
-    string hold = "<color=#0000ffff>HOLD & RELEASE</color>";
+    string hold = "<color=#0000ffff>HOLD</color>";
 
     List<string> stringList = new List<string>();
 
@@ -53,6 +53,8 @@ public class SelectController : MonoBehaviour
     [Header("Stuff Paren")]
     [SerializeField] Transform stuffParent;
 
+    [Header("Goals Mask")]
+    [SerializeField] Transform[] goalsMask;
 
     string ChangeText(string moveP, string holP)
     {
@@ -140,7 +142,7 @@ public class SelectController : MonoBehaviour
 
     void SetPlayerControllerInput(int joypadCount)
     {
-        if (joypadCount <= 2)
+        if (joypadCount <= 1)
         {
             //Playerları 1. ve 3. ye ata
             playerControllers[0].inputSetting = inputList[0];
@@ -206,6 +208,11 @@ public class SelectController : MonoBehaviour
 
         //objeleri aktif yap
         stuffParent.gameObject.SetActive(true);
+
+        for (int i = 0; i < goalsMask.Length; i++)
+        {
+            goalsMask[i].gameObject.SetActive(true);
+        }
 
     }
 }
