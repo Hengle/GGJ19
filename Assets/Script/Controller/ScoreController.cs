@@ -20,6 +20,8 @@ public class ScoreController : MonoBehaviour
 
     int totalStuff;
 
+
+
     private void Start()
     {
         totalStuff = parentStuff.childCount;

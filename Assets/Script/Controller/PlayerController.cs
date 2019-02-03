@@ -76,7 +76,6 @@ public class PlayerController : MonoBehaviour
     float selectUILayer = 25;
     float gameplayLayer = 5;
 
-
     public InputSetting inputSetting;
 
     [Header("Referans UI Select Start Position")]
@@ -88,6 +87,10 @@ public class PlayerController : MonoBehaviour
 
     [Header("Select UI Animator")]
     [SerializeField] Animator selectAnim;
+
+
+    [Header("Ready Text")]
+    [SerializeField] Transform readText;
 
     public bool isReady;
 
@@ -317,6 +320,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    bool isEventBig;
+    bool isEventSmall;
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Select" && other.name == collisonName)
@@ -329,10 +335,23 @@ public class PlayerController : MonoBehaviour
                 selectAnim.enabled = true;
                 speedMove = 0;
 
-                selectController.ReadyController();
+                isEventSmall = false;
+                if (!isEventBig)
+                {
+                    isEventBig = !isEventBig;
+                    selectController.ReadBig(readText);
+                    selectController.ReadyController();
+                }
             }
             else
             {
+                isEventBig = false;
+                if (!isEventSmall)
+                {
+                    isEventSmall = !isEventSmall;
+                    selectController.ReadSmall(readText);
+                }
+
                 ChangeHandSprite(spriteIdle);
                 selectAnim.enabled = false;
                 isReady = false;

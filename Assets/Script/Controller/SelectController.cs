@@ -21,8 +21,9 @@ public class SelectController : MonoBehaviour
          */
 
     [Header("Player")]
-    [SerializeField] PlayerController[] playerControllers; 
+    [SerializeField] PlayerController[] playerControllers;
     [SerializeField] TextMeshProUGUI[] playerControlText;
+    [SerializeField] Transform[] playerReadyText;
 
     [Header("Setting Input")]
     [SerializeField] InputSetting[] joypads;
@@ -56,6 +57,13 @@ public class SelectController : MonoBehaviour
     [Header("Goals Mask")]
     [SerializeField] Transform[] goalsMask;
 
+    [Header("Alpha Fade Out")]
+    [SerializeField] Transform canvas;
+    [SerializeField] Transform[] playerSprite;
+
+    ColorFunctions cf;
+    TransformFunctions tf;
+
     string ChangeText(string moveP, string holP)
     {
         string result = moveP + " " + move + "\n" + holP + " " + hold;
@@ -65,6 +73,9 @@ public class SelectController : MonoBehaviour
 
     void Awake()
     {
+        tf = FindObjectOfType<TransformFunctions>();
+        cf = FindObjectOfType<ColorFunctions>();
+
         int joypadCount = Input.GetJoystickNames().Length;
         print("joypad count : " + joypadCount);
 
@@ -182,15 +193,20 @@ public class SelectController : MonoBehaviour
 
         //buraya kadar gelmis ise hepsi tamamdır.
         print("Hepsi Hazır oyun baslasın");
-        Invoke("StartGame", .4f);
+
+        StartCoroutine(FadeOut(.1f));
+        StartCoroutine(StartGame(.1f));
     }
 
-    void StartGame()
+    IEnumerator StartGame(float delay)
     {
-        //select uı kapanacak.
-        canvasSelect.gameObject.SetActive(false);
+        yield return new WaitForSeconds(delay);
+        
+        tf.SetActiveAfter(canvasSelect.gameObject, false, 0.85f); //Select UI kapanacak.
+        
+        tf.SetActiveAfter(stuffParent.gameObject, true, 0.8f); //Objeleri Aktif yap.
 
-        //oyuncuların position degiştirilecek
+        //Oyuncuların position degiştirilecek
         //Oyuncuların layer değiştirilecek
         for (int i = 0; i < playerControllers.Length; i++)
         {
@@ -206,13 +222,49 @@ public class SelectController : MonoBehaviour
         //camera follow active edilecek.
         //power manager active edilecek.
 
-        //objeleri aktif yap
-        stuffParent.gameObject.SetActive(true);
-
         for (int i = 0; i < goalsMask.Length; i++)
         {
             goalsMask[i].gameObject.SetActive(true);
         }
 
     }
+
+    IEnumerator FadeOut(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        cf.ColorTransition(canvas.GetComponent<CanvasGroup>(), 0, 0, .5f);
+        for (int i = 0; i < playerSprite.Length; i++)
+        {
+            cf.ColorTransition(playerSprite[i].GetComponent<SpriteRenderer>(), Color.white.With(a: 0), .1f, 0.5f);
+        }
+    }
+
+    void FadeIn()
+    {
+        cf.ColorTransition(canvas.GetComponent<CanvasGroup>(), 1, 0, .1f);
+        for (int i = 0; i < playerSprite.Length; i++)
+        {
+            cf.ColorTransition(playerSprite[i].GetComponent<SpriteRenderer>(), Color.white.With(a: 1), .05f, 0.1f);
+        }
+    }
+
+    public void ReadBig(Transform current)
+    {
+        tf.SetActiveAfter(current.gameObject, true, 0);
+        tf.Scale(current, Vector3.one, 0, .3f);
+    }
+
+    public void ReadSmall(Transform current)
+    {
+        tf.Scale(current, Vector3.zero, 0, .1f);
+        tf.SetActiveAfter(current.gameObject, false, .1f);
+    }
+
+    public void ChildScaleUp(Transform parent)
+    {
+        //Transform[] childs = new Transform[paren]
+        //Vector3[]
+    }
+
+
 }

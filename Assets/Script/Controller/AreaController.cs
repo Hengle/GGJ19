@@ -5,101 +5,101 @@ using UnityEngine;
 
 public class AreaController : MonoBehaviour
 {
-	public Area                  area;
-	public List<StuffController> stuffs = new List<StuffController>();
-	public ScoreController       SC;
+    public Area area;
+    public List<StuffController> stuffs = new List<StuffController>();
+    public ScoreController SC;
 
-	[SerializeField] private Transform      moveToHere;
-	[SerializeField] private AnimationCurve moveCurve;
-	[Range(0, 5)]    public  float          moveDelay = 0.33f;
-	[Range(0, 5)]    public  float          moveTime  = 1f;
+    [SerializeField] private Transform moveToHere;
+    [SerializeField] private AnimationCurve moveCurve;
+    [Range(0, 5)] public float moveDelay = 0.33f;
+    [Range(0, 5)] public float moveTime = 1f;
 
-	private TransformFunctions TF;
+    private TransformFunctions TF;
 
-	void Awake()
-	{
-		TF = FindObjectOfType<TransformFunctions>();
-	}
+    void Awake()
+    {
+        TF = FindObjectOfType<TransformFunctions>();
+    }
 
-	public void Add(StuffController newSC)
-	{
-		if(area == Area.Neutral) return;
+    public void Add(StuffController newSC)
+    {
+        if (area == Area.Neutral) return;
 
-		if(!stuffs.Contains(newSC))
-		{
-			stuffs.Add(newSC);
+        if (!stuffs.Contains(newSC))
+        {
+            stuffs.Add(newSC);
 
-			newSC.BreakAllPlayers();
+            newSC.BreakAllPlayers();
 
-			Collider[] cols = newSC.GetComponents<Collider>();
+            Collider[] cols = newSC.GetComponents<Collider>();
 
-			foreach(Collider col in cols)
-			{
-				Destroy(col);
-			}
+            foreach (Collider col in cols)
+            {
+                Destroy(col);
+            }
 
-			Destroy(newSC.GetComponent<Rigidbody>());
+            Destroy(newSC.GetComponent<Rigidbody>());
 
-			if(newSC.GetComponent<AudioSource>() != null)
-			{
-				StartCoroutine(_SoundOut(newSC.GetComponent<AudioSource>()));
-			}
+            if (newSC.GetComponent<AudioSource>() != null)
+            {
+                StartCoroutine(_SoundOut(newSC.GetComponent<AudioSource>()));
+            }
 
-			TF.Move(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
-			TF.Scale(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
-			TF.Rotate(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
-		}
+            TF.Move(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+            TF.Scale(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+            TF.Rotate(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+        }
 
-		SC.UpdateScore(area, CountStuffs());
-	}
+        SC.UpdateScore(area, CountStuffs());
+    }
 
-	IEnumerator _SoundOut(AudioSource AS)
-	{
-		GameObject.Find("Main Camera").GetComponent<AudioSource>().Play();
-		float passed = 0f;
+    IEnumerator _SoundOut(AudioSource AS)
+    {
+        GameObject.Find("Main Camera").GetComponent<AudioSource>().Play();
+        float passed = 0f;
 
-		ParticleSystem[] PSs = AS.GetComponentsInChildren<ParticleSystem>();
+        ParticleSystem[] PSs = AS.GetComponentsInChildren<ParticleSystem>();
 
-		for(int i = 0; i < PSs.Length; i++)
-		{
-			PSs[i].Stop();
-		}
+        for (int i = 0; i < PSs.Length; i++)
+        {
+            PSs[i].Stop();
+        }
 
-		while(passed < 2f)
-		{
-			passed    += Time.deltaTime;
-			AS.volume =  1f - passed / 2f;
+        while (passed < 2f)
+        {
+            passed += Time.deltaTime;
+            AS.volume = 1f - passed / 2f;
 
-			yield return null;
-		}
+            yield return null;
+        }
 
-		AS.volume = 0f;
-		AS.Stop();
-	}
+        AS.volume = 0f;
+        AS.Stop();
+    }
 
-	public void Remove(StuffController newSC)
-	{
-		if(area == Area.Neutral) return;
+    public void Remove(StuffController newSC)
+    {
+        if (area == Area.Neutral) return;
 
-		throw new NotImplementedException();
-	}
+        throw new NotImplementedException();
+    }
 
-	private int CountStuffs()
-	{
-		if(area == Area.Neutral) return 0;
+    private int CountStuffs()
+    {
+        if (area == Area.Neutral) return 0;
 
-		int total = 0;
+        int total = 0;
 
-		for(int i = 0; i < stuffs.Count; i++)
-			total += stuffs[i].stuffValue;
+        for (int i = 0; i < stuffs.Count; i++)
+            total += stuffs[i].stuffValue;
 
-		return total;
-	}
+        return total;
+    }
 }
 
 public enum Area
 {
-	Neutral,
-	Left,
-	Right
+    Neutral,
+    Left,
+    Right
 }

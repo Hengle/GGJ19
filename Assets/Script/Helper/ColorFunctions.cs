@@ -80,6 +80,33 @@ public class ColorFunctions : MonoBehaviour
         }
     }
 
+    public void ColorTransition(CanvasGroup changeThis, float toThis, float delay, float time, AnimationCurve curve)
+    {
+        StartCoroutine(_ColorTransition(changeThis, toThis, delay, time, curve));
+    }
+
+    public void ColorTransition(CanvasGroup changeThis, float toThis, float delay, float time )
+    {
+        StartCoroutine(_ColorTransition(changeThis, toThis, delay, time, defaultCurve));
+    }
+
+    public IEnumerator _ColorTransition(CanvasGroup changeThis, float toThis, float delay, float time, AnimationCurve curve)
+    {
+        yield return new WaitForSeconds(delay);
+        float passed = 0f;
+        float rate = 0f;
+        float initColor = changeThis.alpha;
+
+        while (passed < time)
+        {
+            passed += Time.deltaTime;
+            rate = curve.Evaluate(passed / time);
+
+            changeThis.alpha = Mathf.LerpUnclamped(initColor, toThis, rate);
+            yield return null;
+        }
+    }
+
 
     /*
         Material Functions

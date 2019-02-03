@@ -17,6 +17,8 @@ public class StuffController : MonoBehaviour
 
     private List<PlayerController> PCs = new List<PlayerController>();
 
+    public bool isGo;
+
     void Start()
     {
         rg = GetComponent<Rigidbody>();
