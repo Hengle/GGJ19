@@ -209,6 +209,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 10
+  isGo: 0
 --- !u!212 &20148410
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -478,6 +479,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 5
+  isGo: 0
 --- !u!212 &99464157
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11362,6 +11364,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 5
+  isGo: 0
 --- !u!212 &353808819
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11762,6 +11765,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 5
+  isGo: 0
 --- !u!212 &440384075
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12211,6 +12215,7 @@ MonoBehaviour:
   countHold: 0
   rate: 1
   stuffValue: 15
+  isGo: 0
 --- !u!212 &488497156
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13193,6 +13198,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 5
+  isGo: 0
 --- !u!212 &580117872
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14398,6 +14404,7 @@ MonoBehaviour:
   countHold: 0
   rate: 1
   stuffValue: 15
+  isGo: 0
 --- !u!212 &842612598
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14884,6 +14891,7 @@ MonoBehaviour:
   countHold: 0
   rate: 2
   stuffValue: 25
+  isGo: 0
 --- !u!212 &976129928
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16593,6 +16601,7 @@ MonoBehaviour:
   countHold: 0
   rate: 1
   stuffValue: 25
+  isGo: 0
 --- !u!212 &1284859647
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19016,6 +19025,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 20
+  isGo: 0
 --- !u!212 &1534818999
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19174,6 +19184,7 @@ MonoBehaviour:
   countHold: 0
   rate: 3
   stuffValue: 30
+  isGo: 0
 --- !u!212 &1592190922
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19441,6 +19452,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 10
+  isGo: 0
 --- !u!212 &1600812957
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19781,6 +19793,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 5
+  isGo: 0
 --- !u!212 &1632562898
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20580,6 +20593,7 @@ MonoBehaviour:
   countHold: 0
   rate: 1
   stuffValue: 10
+  isGo: 0
 --- !u!212 &1735893602
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20917,6 +20931,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 10
+  isGo: 0
 --- !u!212 &1799180137
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21127,6 +21142,7 @@ MonoBehaviour:
   countHold: 0
   rate: 0
   stuffValue: 5
+  isGo: 0
 --- !u!212 &1804999148
 SpriteRenderer:
   m_ObjectHideFlags: 0

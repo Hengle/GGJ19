@@ -7,7 +7,6 @@ public class StuffController : MonoBehaviour
     Rigidbody rg;
     public AreaController activeAreaSide = null;
 
-
     public int mass;
     public int countHold;
 
@@ -17,13 +16,15 @@ public class StuffController : MonoBehaviour
 
     private List<PlayerController> PCs = new List<PlayerController>();
 
-    public bool isGo;
+    public bool isGone;
 
     void Start()
     {
         rg = GetComponent<Rigidbody>();
         rg.mass = mass;
     }
+
+
 
     public void Break(PlayerController PC)
     {

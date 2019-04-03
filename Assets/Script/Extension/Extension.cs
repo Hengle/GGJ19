@@ -13,4 +13,16 @@ public static class Extension
     {
         return new Vector3(x ?? origin.x, y ?? origin.y, z ?? origin.z);
     }
+
+    public static Transform[] GetChild(this Transform parent)
+    {
+        Transform[] child = new Transform[parent.childCount];
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            child[i] = parent.GetChild(i);
+        }
+
+        return child;
+    }
 }
