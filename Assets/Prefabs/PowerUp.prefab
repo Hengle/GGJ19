@@ -141,21 +141,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  staminaSprite: {fileID: 21300000, guid: 5939bbaf17eff429cab88cb1b7bcec77, type: 3}
-  speedSprite: {fileID: 21300000, guid: c952d022bd83549e6b7016369eaeb801, type: 3}
-  heavierSprite: {fileID: 21300000, guid: d4ade9d43bb044dd8a90823c9ba61c79, type: 3}
-  spriteRenderer: {fileID: 2464993193798897497}
-  stamina2Sprite: {fileID: 21300000, guid: 9c5a9142019d04f978aca68fc3b21983, type: 3}
-  speed2Sprite: {fileID: 21300000, guid: 467ff555837b249099d54cd21c800117, type: 3}
-  heavier2Sprite: {fileID: 21300000, guid: 8ea7883f88dd14f45933f1e1b7155f61, type: 3}
-  sprite2Renderer: {fileID: 2949251067974452445}
-  stamina3Sprite: {fileID: 21300000, guid: 1fd52e2f1e7e84215bd0ae924123f00c, type: 3}
-  speed3Sprite: {fileID: 21300000, guid: 9b9ebd44e09394be98bde5ccfad51362, type: 3}
-  heavier3Sprite: {fileID: 21300000, guid: fc55ff2b9dad64639acc735ddd74f892, type: 3}
-  sprite3Renderer: {fileID: 5091227018115033270}
-  staminaClip: {fileID: 8300000, guid: ac157aa9417cb92489ea70c81d8ff4d8, type: 3}
-  speedClip: {fileID: 8300000, guid: a743ea86f045ec241ada7a65ccbf1380, type: 3}
-  heavierClip: {fileID: 8300000, guid: dd733ac938ee12e4bb8924e26e3de175, type: 3}
+  audioClip: {fileID: 8300000, guid: ac157aa9417cb92489ea70c81d8ff4d8, type: 3}
   destroyAfter: 12
 --- !u!135 &6399760288799833023
 SphereCollider:
@@ -296,7 +282,7 @@ GameObject:
   - component: {fileID: 8026620294167097918}
   - component: {fileID: 2949251067974452445}
   m_Layer: 0
-  m_Name: glow
+  m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -375,7 +361,7 @@ GameObject:
   - component: {fileID: 4095924947148657209}
   - component: {fileID: 5091227018115033270}
   m_Layer: 0
-  m_Name: ground
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

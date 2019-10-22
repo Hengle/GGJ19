@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public enum UIState
@@ -16,21 +17,36 @@ public enum HandState
     dead
 }
 
+public enum ChangeSpeed
+{
+    normal,
+    quickly
+}
+
+public enum Team
+{
+    hot,
+    cold
+}
+
 public class PlayerController : MonoBehaviour
 {
-    [Header("Hand Image")]
-    [SerializeField] Sprite spriteHold;
+    [Header("Hand Image")] [SerializeField]
+    Sprite spriteHold;
+
     [SerializeField] Sprite spriteIdle;
 
-    [Header("Player Ability")]
-    [SerializeField] float speedMove;
+    [Header("Player Ability")] [SerializeField]
+    float speedMove;
+
     [SerializeField] float speedDownStamina = 15;
     [SerializeField] float speedUpStamina = 15;
     [SerializeField] float speedUpStaminaQuickly = 20;
     [SerializeField] float speedDownStaminaQuickly = 20;
 
-    [Header("Animation UI")]
-    [SerializeField] Transform uiIdle;
+    [Header("Animation UI")] [SerializeField]
+    Transform uiIdle;
+
     [SerializeField] Transform uiHold;
     [SerializeField] Transform uiTired;
     [SerializeField] Transform uiDead;
@@ -49,55 +65,111 @@ public class PlayerController : MonoBehaviour
     float vertical;
     float horizontal;
 
-    public float stamina = 100;
+    public float Stamina
+    {
+        get { return stamina; }
+
+        set
+        {
+            stamina = value;
+            if (stamina > 40)
+            {
+                if (State != HandState.normal)
+                    State = HandState.normal;
+            }
+            else if (stamina > 10)
+            {
+                if (State != HandState.tired)
+                    State = HandState.tired;
+            }
+            else
+            {
+                if (State != HandState.dead)
+                    State = HandState.dead;
+            }
+        }
+    }
+
+    private float stamina = 100;
+
     float staminaMax = 100;
 
     ColorFunctions cf;
     SelectController selectController;
 
-    Coroutine current;
+    Coroutine currentCoroutine;
     Coroutine colorFlip;
 
     public bool isDead;
 
+    HandState State
+    {
+        get { return state; }
+        set
+        {
+            state = value;
+            switch (value)
+            {
+                case HandState.normal:
+                    StopHandTired();
+                    HandColorNormal();
+                    ChangeUI(UIState.idle);
+                    isDead = false;
+                    break;
+                case HandState.tired:
+                    StartHandTired();
+                    ChangeUI(UIState.tired);
+                    isDead = false;
+                    break;
+                case HandState.dead:
+                    StopHandTired();
+                    DeadColorHand();
+                    ChangeUI(UIState.dead);
+                    isDead = true;
+                    Break(currentStuff);
+                    break;
+            }
+        }
+    }
+
     HandState state = HandState.normal;
 
-    public bool isRedTeam;
+    public Team team;
     float startSpeed;
 
-    [Header("Start Position Target")]
-    [SerializeField] Transform startPosition;
+    [Header("Start Position Target")] [SerializeField]
+    Transform startPosition;
 
-    [Header("Border")]
-    [SerializeField] Transform limitVertical;
+    [Header("Border")] [SerializeField] Transform limitVertical;
     [SerializeField] Transform limitHorizontal;
 
-    [Header("Shorting Layer")]
-    float selectUILayer = 25;
+    [Header("Shorting Layer")] float selectUILayer = 25;
     float gameplayLayer = 5;
 
     public InputSetting inputSetting;
 
-    [Header("Referans UI Select Start Position")]
-    [SerializeField] Transform selectPositionStart;
+    [Header("Referans UI Select Start Position")] [SerializeField]
+    Transform selectPositionStart;
 
 
-    [Header("UI Select Collision Name")]
-    [SerializeField] string collisonName;
+    [Header("UI Select Collision Name")] [SerializeField]
+    string collisonName;
 
-    [Header("Select UI Animator")]
-    [SerializeField] Animator selectAnim;
+    [Header("Select UI Animator")] [SerializeField]
+    Animator selectAnim;
 
 
-    [Header("Ready Text")]
-    [SerializeField] Transform readText;
+    [Header("Ready Text")] [SerializeField]
+    Transform readText;
 
     public bool isReady;
+    private GameObject freeze;
 
     void Start()
     {
+        print("Hello i am " + transform.name);
         selectController = FindObjectOfType<SelectController>();
-        cf = FindObjectOfType<ColorFunctions>();
+        cf = GetComponent<ColorFunctions>();
         rg = GetComponent<Rigidbody>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startSpeed = speedMove;
@@ -109,6 +181,8 @@ public class PlayerController : MonoBehaviour
         SetPositionUISelect();
 
         ChangeUI(UIState.idle);
+
+        freeze = transform.GetChild(0).gameObject;
     }
 
     void SetPositionUISelect()
@@ -148,8 +222,6 @@ public class PlayerController : MonoBehaviour
             case UIState.dead:
                 uiDead.gameObject.SetActive(true);
                 break;
-            default:
-                break;
         }
     }
 
@@ -177,15 +249,27 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    
+    public void Freeze(float time)
+    {
+        speedMove = 0;
+        freeze.SetActive(true);
+        StartCoroutine(WarmUp(time));
+    }
+
+    IEnumerator WarmUp(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        freeze.SetActive(false);
+        ResetSpeed();
+    }
+
     void InputController()
     {
         rg.velocity = GetVelocity();
 
         if (isDead)
-        {
-            print("Öldün");
             return;
-        }
 
         /* HOLD */
 
@@ -206,7 +290,6 @@ public class PlayerController : MonoBehaviour
             {
                 Break(currentStuff);
             }
-
         }
         else
         {
@@ -218,7 +301,6 @@ public class PlayerController : MonoBehaviour
             {
                 Break(currentStuff);
             }
-
         }
     }
 
@@ -246,8 +328,6 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        HandController();
-
         PositionLimitController();
     }
 
@@ -259,7 +339,7 @@ public class PlayerController : MonoBehaviour
 
         ChangeHandSprite(spriteHold);
 
-        //Kenime bir joint componenti ekle.
+        //Kendime bir joint component'i ekle.
         CharacterJoint joint = gameObject.AddComponent<CharacterJoint>();
 
         //Objenin Tutulma fonksiyonu cagırılıyor.
@@ -291,20 +371,23 @@ public class PlayerController : MonoBehaviour
 
         isHold = false;
 
-        Up();
+        if (!isDead)
+            Up();
+        else
+           StartCoroutine(StartUp(3));
     }
 
     #region Trigger
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Stuff" && isEnter == false)
+        if (other.CompareTag("Stuff") && isEnter == false)
         {
             isEnter = true;
             currentStuff = other.transform;
         }
 
-        if (other.tag == "PowerUp")
+        if (other.CompareTag("PowerUp"))
         {
             print("Power Up Aldım");
             other.GetComponent<PowerUpController>().Use(this);
@@ -313,7 +396,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Stuff" && !isHold)
+        if (other.CompareTag("Stuff") && !isHold)
         {
             currentStuff = null;
             isEnter = false;
@@ -321,11 +404,13 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    //Burası oyun baslagnıc ekranında oyuncular karakterleri secerken kullanıyor.
     bool isEventBig;
     bool isEventSmall;
+
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Select" && other.name == collisonName)
+        if (other.CompareTag("Select") && other.name == collisonName)
         {
             if (Input.GetButton(keyJump))
             {
@@ -364,71 +449,69 @@ public class PlayerController : MonoBehaviour
 
     #region Stamina
 
-    public void Up()
+    IEnumerator StartUp(float delay)
     {
-        if (current != null)
-        {
-            StopCoroutine(current);
-        }
-
-        current = StartCoroutine(_Up(speedUpStamina));
+        yield return new WaitForSeconds(delay);
+        Up();
     }
-
-    public void UpQuickly()
+    
+    public void Up(ChangeSpeed changeSpeed = ChangeSpeed.normal)
     {
-        if (current != null)
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+
+        float speed = 1;
+        switch (changeSpeed)
         {
-            StopCoroutine(current);
+            case ChangeSpeed.normal:
+                speed = speedUpStamina;
+                break;
+            case ChangeSpeed.quickly:
+                speed = speedUpStaminaQuickly;
+                break;
         }
 
-        current = StartCoroutine(_Up(speedUpStaminaQuickly));
+        currentCoroutine = StartCoroutine(_Up(speed));
     }
 
     IEnumerator _Up(float speed)
     {
-        while (stamina < staminaMax)
+        while (Stamina < staminaMax)
         {
-            stamina += Time.deltaTime * speed;
+            Stamina += Time.deltaTime * speed;
             yield return null;
         }
-
-        isDead = false;
     }
 
-    public void Down()
+    public void Down(ChangeSpeed changeSpeed = ChangeSpeed.normal)
     {
-        if (current != null)
+        if (currentCoroutine != null)
+            StopCoroutine(currentCoroutine);
+
+        float speed = 1;
+        switch (changeSpeed)
         {
-            StopCoroutine(current);
+            case ChangeSpeed.normal:
+                speed = speedDownStamina;
+                break;
+            case ChangeSpeed.quickly:
+                speed = speedDownStaminaQuickly;
+                break;
         }
 
-        current = StartCoroutine(_Down(speedDownStamina));
-    }
-
-    public void DownQuickly()
-    {
-        if (current != null)
-        {
-            StopCoroutine(current);
-        }
-
-        current = StartCoroutine(_Down(speedDownStaminaQuickly));
+        currentCoroutine = StartCoroutine(_Down(speed));
     }
 
     IEnumerator _Down(float speed)
     {
-        while (stamina > 0)
+        while (Stamina > 0)
         {
-            stamina -= Time.deltaTime * speed;
+            Stamina -= Time.deltaTime * speed;
             yield return null;
         }
-
-        isDead = true;
-        print("Is Dead");
     }
 
     #endregion
-
 
     #region Hand Color
 
@@ -437,7 +520,7 @@ public class PlayerController : MonoBehaviour
         spriteRenderer.sprite = sprite;
     }
 
-    void HandTiredStart()
+    void StartHandTired()
     {
         colorFlip = StartCoroutine(cf._ChangeColorLoop(transform, 0.3f, 0.45f, 0.95f));
     }
@@ -458,115 +541,6 @@ public class PlayerController : MonoBehaviour
     void HandColorNormal()
     {
         cf.ColorTransition(spriteRenderer, spriteRenderer.color.With(a: 1f), 0, 0.2f);
-    }
-
-    #endregion
-
-    #region Listener
-
-    bool[] onWorked = new bool[4] { true, true, true, true };
-
-    void SetArray(int index)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            onWorked[i] = true;
-        }
-
-        onWorked[index] = false;
-    }
-
-    bool BoolControl(int index)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (onWorked[i] == true)
-            {
-                if (i == index)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    void HandController()
-    {
-        if (BoolControl(0))
-        {
-            if (HandState.normal == state && stamina < 40)
-            {
-                print("normalde tired 'e ");
-                state = HandState.tired;
-
-                HandTiredStart();
-
-                SetArray(0);
-
-                ChangeUI(UIState.tired);
-
-                return;
-            }
-        }
-
-        if (BoolControl(1))
-        {
-            if (HandState.tired == state && stamina < 10)
-            {
-                state = HandState.dead;
-                isDead = true;
-                print("tireden dead'e ");
-
-                StopHandTired();
-                DeadColorHand();
-
-                Break(currentStuff);
-
-                ChangeUI(UIState.dead);
-
-                SetArray(1);
-
-                return;
-            }
-        }
-
-        if (BoolControl(2))
-        {
-            if (HandState.dead == state && stamina > 98)
-            {
-                print("deadden normale");
-                state = HandState.normal;
-
-                StopHandTired();
-                HandColorNormal();
-
-                ChangeUI(UIState.idle);
-
-                SetArray(2);
-
-                return;
-            }
-        }
-
-        if (BoolControl(3))
-        {
-            if (HandState.tired == state && stamina > 40)
-            {
-                print("tridden normal");
-                state = HandState.normal;
-
-                StopHandTired();
-                HandColorNormal();
-
-                ChangeUI(UIState.idle);
-
-                SetArray(3);
-
-                return;
-            }
-        }
     }
 
     #endregion

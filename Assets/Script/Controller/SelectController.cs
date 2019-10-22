@@ -61,8 +61,8 @@ public class SelectController : MonoBehaviour
     [SerializeField] Transform canvas;
     [SerializeField] Transform[] playerSprite;
 
-    ColorFunctions cf;
-    TransformFunctions tf;
+    [SerializeField] ColorFunctions cf;
+    [SerializeField] TransformFunctions tf;
 
     string ChangeText(string moveP, string holP)
     {
@@ -73,9 +73,6 @@ public class SelectController : MonoBehaviour
 
     void Awake()
     {
-        tf = FindObjectOfType<TransformFunctions>();
-        cf = FindObjectOfType<ColorFunctions>();
-
         int joypadCount = Input.GetJoystickNames().Length;
         print("joypad count : " + joypadCount);
 
@@ -148,7 +145,7 @@ public class SelectController : MonoBehaviour
                 break;
         }
 
-        print("Complated Setting");
+        print("Completed Setting");
     }
 
     void SetPlayerControllerInput(int joypadCount)

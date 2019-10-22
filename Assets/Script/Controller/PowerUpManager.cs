@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PowerUpManager : MonoBehaviour
 {
-    private TransformFunctions TF;
+    [SerializeField] private TransformFunctions TF;
 
-    [Header("Power Up Creating")] public GameObject powerUpObject;
+    [Header("Power Up Creating")] public GameObject[] powerUpObject;
     [Range(0, 60)] public float minCreatingTime = 5f;
     [Range(0, 60)] public float maxCreatingTime = 15f;
     [SerializeField] private Transform minPoint;
@@ -26,14 +28,30 @@ public class PowerUpManager : MonoBehaviour
 
     [Range(1, 10)] public float setStamina = 3f;
 
-
     private float nextCreationTime;
 
     private PlayerController[] players;
 
+    public PowerUpType _testType;
+
+    [ContextMenu("Create Menu")]
+    public void TestCreatePowerUp()
+    {
+        GameObject newPowerUp = Instantiate(powerUpObject[(int)_testType]);
+        GameObject newPowerUpParent = Instantiate(powerUpContainer);
+        newPowerUp.transform.SetParent(newPowerUpParent.transform);
+        newPowerUpParent.transform.localPosition = new Vector3(
+            Random.Range(minPoint.transform.position.x, maxPoint.transform.position.x),
+            0.1f,
+            Random.Range(minPoint.transform.position.z, maxPoint.transform.position.z)
+        );
+        Vector3 originScale = newPowerUp.transform.localScale;
+        newPowerUp.transform.localScale = Vector3.zero;
+        TF.Scale(newPowerUp.transform, originScale, 0f, 0.5f, showCurve);
+    }
+
     void Start()
     {
-        TF = FindObjectOfType<TransformFunctions>();
         nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
         StartCoroutine(CreatePowerUp());
         players = FindObjectsOfType<PlayerController>();
@@ -43,17 +61,17 @@ public class PowerUpManager : MonoBehaviour
     {
         yield return new WaitForSeconds(nextCreationTime);
 
-        GameObject newPU = Instantiate(powerUpObject);
-        GameObject newPUParent = Instantiate(powerUpContainer);
-        newPU.transform.SetParent(newPUParent.transform);
-        newPUParent.transform.localPosition = new Vector3(
+        GameObject newPowerUp = Instantiate(powerUpObject[Random.Range(0,powerUpObject.Length)]);
+        GameObject newPowerUpParent = Instantiate(powerUpContainer);
+        newPowerUp.transform.SetParent(newPowerUpParent.transform);
+        newPowerUpParent.transform.localPosition = new Vector3(
             Random.Range(minPoint.transform.position.x, maxPoint.transform.position.x),
             0.1f,
             Random.Range(minPoint.transform.position.z, maxPoint.transform.position.z)
         );
-        Vector3 origS = newPU.transform.localScale;
-        newPU.transform.localScale = Vector3.zero;
-        TF.Scale(newPU.transform, origS, 0f, 0.5f, showCurve);
+        Vector3 originScale = newPowerUp.transform.localScale;
+        newPowerUp.transform.localScale = Vector3.zero;
+        TF.Scale(newPowerUp.transform, originScale, 0f, 0.5f, showCurve);
 
         nextCreationTime = Random.Range(minCreatingTime, maxCreatingTime);
         StartCoroutine(CreatePowerUp());
@@ -72,12 +90,15 @@ public class PowerUpManager : MonoBehaviour
             case PowerUpType.Speed:
                 Speed(player);
                 break;
+            case PowerUpType.Freeze:
+                Freeze(player);
+                break;
         }
     }
 
     void Stamina(PlayerController player)
     {
-        player.UpQuickly();
+        player.Up(ChangeSpeed.quickly);
     }
 
     void Speed(PlayerController player)
@@ -90,9 +111,20 @@ public class PowerUpManager : MonoBehaviour
     {
         for (int i = 0; i < players.Length; i++)
         {
-            if (players[i].isRedTeam != player.isRedTeam)
+            if (players[i].team != player.team) //Karsı oyuncular bulunur.
             {
-                players[i].DownQuickly();
+                players[i].Down(ChangeSpeed.quickly);
+            }
+        }
+    }
+
+    void Freeze(PlayerController player)
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].team != player.team)
+            {
+                players[i].Freeze(5);
             }
         }
     }
@@ -109,5 +141,6 @@ public enum PowerUpType
 {
     Stamina,
     Speed,
-    Heavier
+    Heavier,
+    Freeze
 }

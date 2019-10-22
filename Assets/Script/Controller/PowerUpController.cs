@@ -7,29 +7,11 @@ public class PowerUpController : MonoBehaviour
 {
 	public  PowerUpType        type;
 	private TransformFunctions TF;
-	private PowerUpManager     PUM;
+	private PowerUpManager     powerUpManager;
 	public  Transform          targetScale;
 	public  AnimationCurve     destroyCurve;
 
-	public Sprite         staminaSprite;
-	public Sprite         speedSprite;
-	public Sprite         heavierSprite;
-	public SpriteRenderer spriteRenderer;
-
-	public Sprite         stamina2Sprite;
-	public Sprite         speed2Sprite;
-	public Sprite         heavier2Sprite;
-	public SpriteRenderer sprite2Renderer;
-
-	public Sprite         stamina3Sprite;
-	public Sprite         speed3Sprite;
-	public Sprite         heavier3Sprite;
-	public SpriteRenderer sprite3Renderer;
-
-
-	public  AudioClip   staminaClip;
-	public  AudioClip   speedClip;
-	public  AudioClip   heavierClip;
+	public  AudioClip audioClip;
 	private AudioSource audioSource;
 
 	[Range(5f, 120f)] public float destroyAfter = 12f;
@@ -38,31 +20,10 @@ public class PowerUpController : MonoBehaviour
 
 	void Start()
 	{
-		type = RandomEnumValue<PowerUpType>();
-
 		audioSource = FindObjectOfType<AudioSource>();
 
-		switch(type)
-		{
-			case PowerUpType.Stamina:
-				spriteRenderer.sprite  = staminaSprite;
-				sprite3Renderer.sprite = stamina3Sprite;
-				sprite2Renderer.sprite = stamina2Sprite;
-				break;
-			case PowerUpType.Heavier:
-				spriteRenderer.sprite  = heavierSprite;
-				sprite3Renderer.sprite = heavier3Sprite;
-				sprite2Renderer.sprite = heavier2Sprite;
-				break;
-			case PowerUpType.Speed:
-				spriteRenderer.sprite  = speedSprite;
-				sprite3Renderer.sprite = speed3Sprite;
-				sprite2Renderer.sprite = speed2Sprite;
-				break;
-		}
-
 		TF          = FindObjectOfType<TransformFunctions>();
-		PUM         = FindObjectOfType<PowerUpManager>();
+		powerUpManager         = FindObjectOfType<PowerUpManager>();
 		targetScale = GameObject.Find("ZeroScale").transform;
 	}
 
@@ -79,21 +40,9 @@ public class PowerUpController : MonoBehaviour
 
 	public void Use(PlayerController player)
 	{
-		switch(type)
-		{
-			case PowerUpType.Stamina:
-				audioSource.clip = staminaClip;
-				break;
-			case PowerUpType.Heavier:
-				audioSource.clip = heavierClip;
-				break;
-			case PowerUpType.Speed:
-				audioSource.clip = speedClip;
-				break;
-		}
-
+		audioSource.clip = audioClip;
 		audioSource.PlayOneShot(audioSource.clip);
-		PUM.PowerUp(type, player);
+		powerUpManager.PowerUp(type, player);
 		DestroyThis();
 	}
 
