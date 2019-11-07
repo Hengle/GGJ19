@@ -5,13 +5,13 @@ public class TransformFunctions : MonoBehaviour
 {
 
     #region Singleton
-    public static TransformFunctions initial;
+    public static TransformFunctions Instance;
 
     void Singleton()
     {
-        if (initial == null)
+        if (Instance == null)
         {
-            initial = this;
+            Instance = this;
         }
         else
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Script.Controller;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -65,11 +66,4 @@ public class PowerUpController : MonoBehaviour
 		return (T) v.GetValue(Random.Range(0, v.Length));
 	}
 
-	private void OnTriggerEnter(Collider other)
-	{
-		if(other.CompareTag("Player"))
-		{
-			Use(other.GetComponent<PlayerController>());
-		}
-	}
 }

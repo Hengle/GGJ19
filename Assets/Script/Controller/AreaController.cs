@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Script.Controller;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class AreaController : MonoBehaviour
 {
     public Area area;
-    public List<StuffController> stuffs = new List<StuffController>();
-    public ScoreController SC;
+    [FormerlySerializedAs("stuffs")] public List<StuffController> _listStuff = new List<StuffController>();
+    [FormerlySerializedAs("SC")] public ScoreController _scoreController;
 
     [SerializeField] private Transform moveToHere;
     [SerializeField] private AnimationCurve moveCurve;
@@ -21,36 +23,39 @@ public class AreaController : MonoBehaviour
         TF = FindObjectOfType<TransformFunctions>();
     }
 
-    public void Add(StuffController newSC)
+    public void Add(StuffController stuff)
     {
         if (area == Area.Neutral) return;
 
-        if (!stuffs.Contains(newSC))
+        if (!_listStuff.Contains(stuff))
         {
-            stuffs.Add(newSC);
+            _listStuff.Add(stuff);
 
-            newSC.BreakAllPlayers();
+            stuff.BreakAllPlayers();
 
-            Collider[] cols = newSC.GetComponents<Collider>();
+            Collider[] cols = stuff.GetComponents<Collider>();
 
             foreach (Collider col in cols)
             {
                 Destroy(col);
             }
 
-            Destroy(newSC.GetComponent<Rigidbody>());
+            Destroy(stuff.GetComponent<Rigidbody>());
 
-            if (newSC.GetComponent<AudioSource>() != null)
+            if (stuff.GetComponent<AudioSource>() != null)
             {
-                StartCoroutine(_SoundOut(newSC.GetComponent<AudioSource>()));
+                StartCoroutine(_SoundOut(stuff.GetComponent<AudioSource>()));
             }
 
-            TF.Move(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
-            TF.Scale(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
-            TF.Rotate(newSC.transform, moveToHere, moveDelay, moveTime, moveCurve);
+            //is gold değişkeni kapanmaması için
+            stuff.StopAllCoroutines();
+            
+            TF.Move(stuff.transform, moveToHere, moveDelay, moveTime, moveCurve);
+            TF.Scale(stuff.transform, moveToHere, moveDelay, moveTime, moveCurve);
+            TF.Rotate(stuff.transform, moveToHere, moveDelay, moveTime, moveCurve);
         }
 
-        SC.UpdateScore(area, CountStuffs());
+        _scoreController.UpdateScore(area, CountStuffs());
     }
 
     IEnumerator _SoundOut(AudioSource AS)
@@ -90,16 +95,9 @@ public class AreaController : MonoBehaviour
 
         int total = 0;
 
-        for (int i = 0; i < stuffs.Count; i++)
-            total += stuffs[i].stuffValue;
+        for (int i = 0; i < _listStuff.Count; i++)
+            total += _listStuff[i].stuffValue;
 
         return total;
     }
-}
-
-public enum Area
-{
-    Neutral,
-    Left,
-    Right
 }

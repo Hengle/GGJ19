@@ -186,11 +186,10 @@ public class ColorFunctions : MonoBehaviour
         SpriteRenderer renderer = current.GetComponent<SpriteRenderer>();
         while (true)
         {
-            print("Elimin Loop Alpha Degişimi..");
             ColorTransition(renderer, renderer.color.With(a: minAlpha), 0, time);
-            yield return new WaitForSeconds(time);
+            yield return new WaitForSeconds(time+0.01f);
             ColorTransition(renderer, renderer.color.With(a: maxAlpha), 0, time);
-            yield return new WaitForSeconds(time);
+            yield return new WaitForSeconds(time+0.01f);
         }
     }
 

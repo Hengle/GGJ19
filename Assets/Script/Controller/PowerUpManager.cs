@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Script.Controller;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -34,7 +35,7 @@ public class PowerUpManager : MonoBehaviour
 
     public PowerUpType _testType;
 
-    [ContextMenu("Create Menu")]
+    [ContextMenu("Create Power Up")]
     public void TestCreatePowerUp()
     {
         GameObject newPowerUp = Instantiate(powerUpObject[(int)_testType]);
@@ -81,8 +82,8 @@ public class PowerUpManager : MonoBehaviour
     {
         switch (type)
         {
-            case PowerUpType.Stamina:
-                Stamina(player);
+            case PowerUpType.StaminaUp:
+                StaminaUp(player);
                 break;
             case PowerUpType.Heavier:
                 Heavier(player);
@@ -93,10 +94,15 @@ public class PowerUpManager : MonoBehaviour
             case PowerUpType.Freeze:
                 Freeze(player);
                 break;
+            case PowerUpType.Donkey:
+                Donkey(player);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
     }
 
-    void Stamina(PlayerController player)
+    void StaminaUp(PlayerController player)
     {
         player.Up(ChangeSpeed.quickly);
     }
@@ -128,6 +134,11 @@ public class PowerUpManager : MonoBehaviour
             }
         }
     }
+    
+    void Donkey(PlayerController player)
+    {
+        player.Donkey(5);
+    }
 
     IEnumerator _ResetSpeed(PlayerController player)
     {
@@ -135,12 +146,4 @@ public class PowerUpManager : MonoBehaviour
 
         player.ResetSpeed();
     }
-}
-
-public enum PowerUpType
-{
-    Stamina,
-    Speed,
-    Heavier,
-    Freeze
 }
